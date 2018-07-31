@@ -9,7 +9,7 @@ import javax.swing.table.TableModel;
 /**
 * Program Name:	DBUtils.java
 * Purpose:  methods used for database utilities
-* Coder:	Trinh Han
+* Coder:	Sam And Oscar
 * Date:     July 11, 2018   
 */
 

@@ -15,7 +15,7 @@ import javax.swing.table.TableModel;
 
 /**
  * Program Name: Movie Database Viewer
- * Coder: Sam
+ * Coder: Oscar and Sam
  * Date: Jul 25, 2018
  * Purpose: 
  */
