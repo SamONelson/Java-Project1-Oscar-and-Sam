@@ -38,6 +38,14 @@ import javax.swing.table.*;
 public class LibraryViewer extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
+=======
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.table.*;
+
+public class LibraryViewer extends JFrame {
+	private static final long serialVersionUID = 1L;
+>>>>>>> 9ff08291fae4764b643db7ae86738b92841cee2d
 	//	CardLayout cardLayout;
 	Color bgColor = new Color(102, 51, 153);
 	JTable t_Table;
@@ -104,13 +112,11 @@ public class LibraryViewer extends JFrame {
 		tf_ISBN = new JTextField(10);
 		tf_Edition = new JTextField(10);
 		tf_Subject = new JTextField(10);
-<<<<<<< HEAD
-		
-		
-		b_Go = new JButton("Add Book");
-		b_Add = new JButton("Add Author");
-		b_Clear = new JButton("Clear Authors");
-		
+
+		b_Add = new JButton("Add Book");
+		b_Clear = new JButton("Add Author");
+		b_Go = new JButton("Clear Authors");
+
 		t_Table = new JTable(tm_TableModel);
 		sp_ScrollPane = new JScrollPane(t_Table);
 		//p_AddBook.setLayout(new BoxLayout(p_AddBook, BoxLayout.X_AXIS));
