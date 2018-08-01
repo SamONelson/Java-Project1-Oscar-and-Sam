@@ -1,6 +1,7 @@
 
 //Imports are listed in full to show what's being used
 //could just import javax.swing.* and java.awt.* etc..
+<<<<<<< HEAD
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -28,9 +29,12 @@ import java.awt.Container;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+=======
+>>>>>>> c2d9164afbb9dc5df51d587cab9735de616436da
 
 public class LibraryViewer extends JFrame {
 //	CardLayout cardLayout;
+	//	CardLayout cardLayout;
 	JTable t_Table;
 	JScrollPane sp_ScrollPane;
 	TableModel tm_TableModel;
@@ -93,6 +97,7 @@ public class LibraryViewer extends JFrame {
 		tf_ISBN = new JTextField(10);
 		tf_Edition = new JTextField(10);
 		tf_Subject = new JTextField(10);
+<<<<<<< HEAD
 		
 		
 		b_Go = new JButton("Add Book");
@@ -189,6 +194,8 @@ public class LibraryViewer extends JFrame {
 		p_AddBook.add(l_PossibleErrors, c);
 		
 //		p_AddBook.add(sp_ScrollPane);
+=======
+>>>>>>> c2d9164afbb9dc5df51d587cab9735de616436da
 	}
 
 	void setupAddUpdateBorrower() {
@@ -210,6 +217,7 @@ public class LibraryViewer extends JFrame {
 		cb_Type.addItem("DEPENDS ON SQL STATEMENT!");
 		l_PossibleErrors = new JLabel("No Errors YEt!");
 		l_PossibleErrors.setForeground(Color.RED);;
+		;
 		b_Go = new JButton("GO!");
 		//tm_TableModel = tm;
 		t_Table = new JTable(tm_TableModel);
