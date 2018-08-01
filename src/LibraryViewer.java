@@ -1,7 +1,7 @@
 
 //Imports are listed in full to show what's being used
 //could just import javax.swing.* and java.awt.* etc..
-<<<<<<< HEAD
+
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -29,23 +29,14 @@ import java.awt.Container;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-=======
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.table.*;
->>>>>>> c2d9164afbb9dc5df51d587cab9735de616436da
-
-public class LibraryViewer extends JFrame {
-	private static final long serialVersionUID = 1L;
-	
-=======
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.*;
 
+
 public class LibraryViewer extends JFrame {
 	private static final long serialVersionUID = 1L;
->>>>>>> 9ff08291fae4764b643db7ae86738b92841cee2d
+
 	//	CardLayout cardLayout;
 	Color bgColor = new Color(102, 51, 153);
 	JTable t_Table;
@@ -206,8 +197,7 @@ public class LibraryViewer extends JFrame {
 		c.gridy = 4;       //third row
 		p_AddBook.add(l_PossibleErrors, c);
 		
-//		p_AddBook.add(sp_ScrollPane);
-=======
+
 
 		b_Add = new JButton("Add Book");
 		b_Clear = new JButton("Add Author");
@@ -216,7 +206,6 @@ public class LibraryViewer extends JFrame {
 		t_Table = new JTable(tm_TableModel);
 		sp_ScrollPane = new JScrollPane(t_Table);
 
->>>>>>> c2d9164afbb9dc5df51d587cab9735de616436da
 	}
 
 	void setupAddUpdateBorrower() {
