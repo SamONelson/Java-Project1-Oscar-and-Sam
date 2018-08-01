@@ -73,9 +73,9 @@ public class LibraryViewer extends JFrame {
 		tf_Edition = new JTextField(10);
 		tf_Subject = new JTextField(10);
 
-		b_Add = new JButton("Add Book");
-		b_Clear = new JButton("Add Author");
-		b_Go = new JButton("Clear Authors");
+		b_Add = new JButton("Add Author");
+		b_Clear = new JButton("Clear Authors");
+		b_Go = new JButton("Add Book");
 
 		t_Table = new JTable(tm_TableModel);
 		sp_ScrollPane = new JScrollPane(t_Table);
@@ -164,15 +164,6 @@ public class LibraryViewer extends JFrame {
 		c.gridwidth = 2;   //2 columns wide
 		c.gridy = 4;       //third row
 		p_AddBook.add(l_PossibleErrors, c);
-		
-
-
-		b_Add = new JButton("Add Book");
-		b_Clear = new JButton("Add Author");
-		b_Go = new JButton("Clear Authors");
-
-		t_Table = new JTable(tm_TableModel);
-		sp_ScrollPane = new JScrollPane(t_Table);
 
 	}
 
