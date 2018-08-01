@@ -3,13 +3,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.*;
 
 public class LibraryViewer extends JFrame {
 	private static final long serialVersionUID = 1L;
-
+	private static LibraryModel model = new LibraryModel();
 	// CardLayout cardLayout;
 	private Color bgColor = new Color(102, 51, 153);
 	private JTable t_Table;
@@ -67,8 +70,43 @@ public class LibraryViewer extends JFrame {
 		p_Checkout.setBackground(bgColor);
 		p_Return.setBackground(bgColor);
 		p_List.setBackground(bgColor);
-		this.add(tp_Tabs);
+	
 
+		
+		
+		tp_Tabs.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+            	System.out.println("SEL");
+            	if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
+                	cb_Type.removeAllItems();
+                	cb_Type.setVisible(false);
+                	cb_PrepSQL.setSelectedIndex(0);
+                }
+            	else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
+                	cb_AuthorList.removeAllItems();
+                }
+            	else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
+                	cb_User.removeAllItems();
+                	cb_User.addItem("Add New User...");
+                	// ADD TO CB_USER
+                }
+            	else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
+                	cb_Books.removeAllItems();
+                	cb_User.removeAllItems();
+                	// Populate Books
+                	// Populate Users
+                }
+            	else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
+                	cb_Books.removeAllItems();
+                	// Populate Books
+                }
+            }
+        });
+		
+		
+		this.add(tp_Tabs);
 		this.setVisible(true);
 	}
 
@@ -228,7 +266,7 @@ public class LibraryViewer extends JFrame {
 		p_Checkout.add(l_PossibleErrors);
 	}
 
-	void setupReturn() {
+	void setupReturn() {	
 		l_Book = new JLabel("Book:");
 		l_Borrower = new JLabel("Borrower:");
 		l_Date = new JLabel("Date:");
@@ -263,13 +301,11 @@ public class LibraryViewer extends JFrame {
 		cb_PrepSQL.addItem("All Borrowers");
 		cb_PrepSQL.addItem("Overdue books");
 		cb_Type = new JComboBox<String>();
-		// make a method that fills the combo box depending on context
-		cb_Type.addItem("DEPENDS ON SQL STATEMENT!");
+		cb_Type.setVisible(false);
 		l_PossibleErrors = new JLabel("No Errors YEt!");
 		l_PossibleErrors.setForeground(Color.RED);
 
 		b_Go = new JButton("GO!");
-		// tm_TableModel = tm;
 		t_Table = new JTable(tm_TableModel);
 		sp_ScrollPane = new JScrollPane(t_Table);
 
@@ -293,9 +329,12 @@ public class LibraryViewer extends JFrame {
 		p_List.add(p_Top, BorderLayout.NORTH);
 		p_List.add(p_Middle, BorderLayout.CENTER);
 		p_List.add(p_Bottom, BorderLayout.SOUTH);
-		
-		ListenerForButtons listener = new ListenerForButtons();
-		b_Go.addActionListener(listener);
+
+		ListenerForButtons b_Listener = new ListenerForButtons();
+		b_Go.addActionListener(b_Listener);
+
+		ListenerForComboBox cb_Listener = new ListenerForComboBox();
+		cb_PrepSQL.addItemListener(cb_Listener);
 	}
 
 	private class ListenerForButtons implements ActionListener {
@@ -305,7 +344,12 @@ public class LibraryViewer extends JFrame {
 			System.out.println(tp_Tabs.getSelectedIndex() + " " + e.getActionCommand().toString());
 			if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
 				if (e.getActionCommand().equals("GO!")) {
-					int selected = cb_PrepSQL.getSelectedIndex();
+					int decision = cb_PrepSQL.getSelectedIndex();
+					model.ListPanelsqlStatement(decision, cb_Type.getItemCount() > 0 ? cb_Type.getSelectedItem().toString() : "");
+					tm_TableModel = model.getTable();
+					t_Table = new JTable(tm_TableModel);
+					sp_ScrollPane.removeAll();
+					sp_ScrollPane.add(t_Table);
 				}
 
 			} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
@@ -326,6 +370,41 @@ public class LibraryViewer extends JFrame {
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
+				if (e.getSource().equals(cb_PrepSQL) && e.getStateChange() == ItemEvent.SELECTED) {
+					if (cb_PrepSQL.getSelectedIndex() == 0) {
+						cb_Type.setVisible(false);
+					}
+					if (cb_PrepSQL.getSelectedIndex() == 1) {
+						cb_Type.setVisible(false);
+					}
+					if (cb_PrepSQL.getSelectedIndex() == 2) {
+						System.out.println("Subject List Selected");
+						ArrayList<String> temp = model.getSubjects();
+						cb_Type.removeAllItems();
+						for (int i = 0; i < temp.size(); i++) {
+							cb_Type.addItem(temp.get(i));
+						}
+						cb_Type.setVisible(true);
+					}
+					if (cb_PrepSQL.getSelectedIndex() == 3) {
+						System.out.println("Author List Selected");
+						ArrayList<String> temp = model.getAuthors();
+						cb_Type.removeAllItems();
+						for (int i = 0; i < temp.size(); i++) {
+							cb_Type.addItem(temp.get(i));
+						}
+						cb_Type.setVisible(true);
+					}
+					if (cb_PrepSQL.getSelectedIndex() == 4) {
+						cb_Type.setVisible(false);
+					}
+					if (cb_PrepSQL.getSelectedIndex() == 5) {
+						cb_Type.setVisible(false);
+					}
+					if (cb_PrepSQL.getSelectedIndex() == 6) {
+						cb_Type.setVisible(false);
+					}
+				}
 
 			} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
 
