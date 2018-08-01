@@ -82,78 +82,66 @@ public class LibraryViewer extends JFrame {
 		//p_AddBook.setLayout(new BoxLayout(p_AddBook, BoxLayout.X_AXIS));
 		p_AddBook.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.05;
 		c.weighty = 1;
 		c.insets = new Insets(5, 5, 5, 5);
 		
-		
 		c.gridx = 0;       //aligned with button 2
-		//c.gridwidth = 1;   //2 columns wide
 		c.gridy = 0;       //third row
 		p_AddBook.add(l_Title, c);
-		
-		
-		c.gridx = 1;       //aligned with button 2
-		//c.gridwidth = 1;   //2 columns wide
-		c.gridy = 0;       //third row
-		p_AddBook.add(tf_Title, c);
-		
-		
-		c.gridx = 2;       //aligned with button 2
-		//c.gridwidth = 1;   //2 columns wide
-		c.gridy = 0;       //third row
-		p_AddBook.add(l_Author, c);
-		
-		c.gridx = 3;       //aligned with button 2
-		//c.gridwidth = 1;   //2 columns wide
-		c.gridy = 0;       //third row
-		p_AddBook.add(tf_Author, c);
-		
-		c.gridx = 4;       //aligned with button 2
-		//c.gridwidth = 1;   //2 columns wide
-		c.gridy = 0;       //third row
-		p_AddBook.add(b_Add, c);
-		
 		c.gridx = 0;       //aligned with button 2
-		//c.gridwidth = 1;   //2 columns wide
 		c.gridy = 1;       //third row
 		p_AddBook.add(l_ISBN, c);
+		c.gridx = 2;       //aligned with button 2
+		c.gridy = 0;       //third row
+		p_AddBook.add(l_Author, c);
+		c.gridx = 0;       //aligned with button 2
+		c.gridwidth = 1;   //2 columns wide
+		c.gridy = 2;       //third row
+		p_AddBook.add(l_Edition, c);
+		c.gridx = 0;       //aligned with button 2
+		c.gridwidth = 1;   //2 columns wide
+		c.gridy = 3;       //third row
+		p_AddBook.add(l_Subject, c);
 		
+		c.weightx = 2.0;
 		c.gridx = 1;       //aligned with button 2
-		//c.gridwidth = 1;   //2 columns wide
+		c.gridy = 0;       //third row
+		p_AddBook.add(tf_Title, c);
+		c.gridx = 3;       //aligned with button 2
+		c.gridy = 0;       //third row
+		p_AddBook.add(tf_Author, c);
+		c.gridx = 1;       //aligned with button 2
 		c.gridy = 1;       //third row
 		p_AddBook.add(tf_ISBN, c);
+		c.gridx = 1;       //aligned with button 2
+		c.gridwidth = 1;   //2 columns wide
+		c.gridy = 3;       //third row
+		p_AddBook.add(tf_Subject, c);
+		c.gridx = 1;       //aligned with button 2
+		c.gridwidth = 1;   //2 columns wide
+		c.gridy = 2;       //third row
+		p_AddBook.add(tf_Edition, c);
+		c.gridx = 4;       //aligned with button 2
+		c.gridy = 0;       //third row
+		p_AddBook.add(b_Add, c);
+	
 		
+	
 		c.gridx = 2;       //aligned with button 2
 		c.gridwidth = 2;   //2 columns wide
 		c.gridy = 1;       //third row
 		p_AddBook.add(sp_ScrollPane, c);
 		
 		c.gridx = 4;       //aligned with button 2
-		//c.gridwidth = 1;   //2 columns wide
+		c.gridwidth = 1;   //2 columns wide
 		c.gridy = 1;       //third row
 		p_AddBook.add(b_Clear, c);
 		
-		c.gridx = 0;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
-		c.gridy = 2;       //third row
-		p_AddBook.add(l_Edition, c);
+
 		
-		c.gridx = 1;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
-		c.gridy = 2;       //third row
-		p_AddBook.add(tf_Edition, c);
-		
-		c.gridx = 0;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
-		c.gridy = 3;       //third row
-		p_AddBook.add(l_Subject, c);
-		
-		c.gridx = 1;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
-		c.gridy = 3;       //third row
-		p_AddBook.add(tf_Subject, c);
+	
 		
 		c.gridx = 0;       //aligned with button 2
 		c.gridwidth = 2;   //2 columns wide
@@ -189,7 +177,7 @@ public class LibraryViewer extends JFrame {
 		p_Bottom.setBackground(bgColor);
 
 		p_Top.add(cb_User);
-		p_Mid.setLayout(new GridLayout(3, 2, 50, 100));
+		p_Mid.setLayout(new GridLayout(3, 2, 10, 10));
 		p_Mid.add(l_FirstName);
 		p_Mid.add(tf_FirstName);
 		p_Mid.add(l_LastName);
@@ -218,7 +206,7 @@ public class LibraryViewer extends JFrame {
 		cb_Books.addItem("Any Book That is not currently checked out");
 		cb_User.addItem("Any User!");
 		
-		p_Checkout.setLayout(new GridLayout(5,2,50,50));
+		p_Checkout.setLayout(new GridLayout(5,2,10, 10));
 		p_Checkout.add(l_Book);
 		p_Checkout.add(cb_Books);
 		p_Checkout.add(l_Borrower);
@@ -243,7 +231,7 @@ public class LibraryViewer extends JFrame {
 		
 		cb_Books.addItem("Any Book That is currently checked out");
 		
-		p_Return.setLayout(new GridLayout(5,2,50,50));
+		p_Return.setLayout(new GridLayout(5,2,10, 10));
 		p_Return.add(l_Book);
 		p_Return.add(cb_Books);
 		p_Return.add(l_Borrower);
@@ -259,21 +247,38 @@ public class LibraryViewer extends JFrame {
 
 	void setupList() {
 		cb_PrepSQL = new JComboBox<String>();
-		cb_PrepSQL.addItem("PREPARE SOME SQL STATEMENTS IN THE CONTROLLER LOL");
+		cb_PrepSQL.addItem("PREPARE SOME SQL STATEMENTS");
 		cb_Type = new JComboBox<String>();
 		cb_Type.addItem("DEPENDS ON SQL STATEMENT!");
 		l_PossibleErrors = new JLabel("No Errors YEt!");
 		l_PossibleErrors.setForeground(Color.RED);
-		;
+		
 		b_Go = new JButton("GO!");
 		// tm_TableModel = tm;
 		t_Table = new JTable(tm_TableModel);
 		sp_ScrollPane = new JScrollPane(t_Table);
 
-		p_List.add(cb_PrepSQL);
-		p_List.add(cb_Type);
-		p_List.add(sp_ScrollPane);
-		p_List.add(b_Go);
-		p_List.add(l_PossibleErrors);
+		JPanel p_Top = new JPanel();
+		JPanel p_Middle = new JPanel();
+		JPanel p_Bottom = new JPanel();
+		p_Top.setBackground(bgColor);
+		p_Middle.setBackground(bgColor);
+		p_Bottom.setBackground(bgColor);
+		
+		
+		p_Top.add(cb_PrepSQL);
+		p_Top.add(cb_Type);
+		
+		p_Middle.add(sp_ScrollPane);
+		
+		p_Bottom.add(b_Go);
+		p_Bottom.add(l_PossibleErrors);
+		
+		p_List.setLayout(new BorderLayout());
+		
+		
+		p_List.add(p_Top, BorderLayout.NORTH);
+		p_List.add(p_Middle, BorderLayout.CENTER);
+		p_List.add(p_Bottom, BorderLayout.SOUTH);
 	}
 }
