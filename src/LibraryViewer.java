@@ -1,59 +1,37 @@
 
 //Imports are listed in full to show what's being used
 //could just import javax.swing.* and java.awt.* etc..
-import java.awt.EventQueue;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import javax.swing.BorderFactory;
-import javax.swing.border.Border;
-import javax.swing.table.TableModel;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.SwingConstants;
-import java.awt.Container;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.table.*;
 
 public class LibraryViewer extends JFrame {
-//	CardLayout cardLayout;
+	private static final long serialVersionUID = 1L;
+	
+	//	CardLayout cardLayout;
+	Color bgColor = new Color(102, 51, 153);
 	JTable t_Table;
 	JScrollPane sp_ScrollPane;
 	TableModel tm_TableModel;
 	JButton b_Go, b_Add, b_Clear;
-	JLabel l_PossibleErrors, l_Title, l_ISBN, l_Edition, l_Subject, l_Author;
+	JLabel l_PossibleErrors, l_Title, l_ISBN, l_Edition, l_Subject, l_Author, l_FirstName, l_LastName, l_Email, l_Date, l_DueDate, l_Book, l_Borrower;
 	JPanel /* p_Cards, p_Tabs, */ p_AddBook, p_AddUpdateBorrower, p_Checkout, p_Return, p_List;
-	JTextField tf_Author, tf_Title, tf_ISBN, tf_Edition, tf_Subject;
-	
-	JComboBox<String> cb_PrepSQL, cb_Type;
+	JTextField tf_Author, tf_Title, tf_ISBN, tf_Edition, tf_Subject, tf_FirstName, tf_LastName, tf_Email;
+
+	JComboBox<String> cb_PrepSQL, cb_Type, cb_User, cb_Books;
 //	JButton b_AddBook, b_AddUpdateBorrower, b_Checkout, b_Return, b_List; 
 	JTabbedPane tp_Tabs;
 
 	public static void main(String[] args) {
-		new LibraryViewer(/*TableModel*/);
+		new LibraryViewer(/* TableModel */);
 	}
 
-	public LibraryViewer(/*TableModel tm*/) {
+	public LibraryViewer(/* TableModel tm */) {
 		super("Library Management V1.0 Oscar & Sam");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(700,550);
+		this.setSize(700, 550);
 		this.setLocationRelativeTo(null);
 //		this.setResizable(false);
-//		this.setLayout(new BorderLayout());
-//		cardLayout = new CardLayout();
 
 		tp_Tabs = new JTabbedPane();
 		p_AddBook = new JPanel();
@@ -61,124 +39,138 @@ public class LibraryViewer extends JFrame {
 		p_Checkout = new JPanel();
 		p_Return = new JPanel();
 		p_List = new JPanel();
-		
+
 		setupList();
 		setupAddBook();
+		setupAddUpdateBorrower();
+		setupCheckout();
+		setupReturn();
+		
 		tp_Tabs.add("List", p_List);
 		tp_Tabs.add("Add Book", p_AddBook);
 		tp_Tabs.add("Add/Update Borrower", p_AddUpdateBorrower);
 		tp_Tabs.add("Checkout", p_Checkout);
 		tp_Tabs.add("Return", p_Return);
-		p_AddBook.setBackground(Color.RED);
-		p_AddUpdateBorrower.setBackground(Color.GREEN);
-		p_Checkout.setBackground(Color.BLUE);
-		p_Return.setBackground(Color.PINK);
-		p_List.setBackground(new Color(102, 51, 153));
+		p_AddBook.setBackground(bgColor);
+		p_AddUpdateBorrower.setBackground(bgColor);
+		p_Checkout.setBackground(bgColor);
+		p_Return.setBackground(bgColor);
+		p_List.setBackground(bgColor);
 		this.add(tp_Tabs);
 		this.setVisible(true);
 	}
 
-	void setupAddBook() {	// HOLY FUCK I HATE THIS
+	void setupAddBook() { // HOLY FUCK I HATE THIS
 		l_Author = new JLabel("Author:");
 		l_Title = new JLabel("Title:");
 		l_ISBN = new JLabel("ISBN:");
 		l_Edition = new JLabel("Edition:");
 		l_Subject = new JLabel("Subject:");
 		l_PossibleErrors = new JLabel("No Errors YEt!");
-		l_PossibleErrors.setForeground(Color.BLUE);;
-		
+		l_PossibleErrors.setForeground(Color.BLUE);
+
 		tf_Author = new JTextField(10);
 		tf_Title = new JTextField(10);
 		tf_ISBN = new JTextField(10);
 		tf_Edition = new JTextField(10);
 		tf_Subject = new JTextField(10);
-		
-		
+
 		b_Add = new JButton("Add Book");
 		b_Clear = new JButton("Add Author");
 		b_Go = new JButton("Clear Authors");
-		
+
 		t_Table = new JTable(tm_TableModel);
 		sp_ScrollPane = new JScrollPane(t_Table);
-		
-		GridBagConstraints c = new GridBagConstraints();
-		
-		p_AddBook.setLayout(new GridBagLayout());
-		c.gridx = 0;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
-		c.gridy = 0;       //third row
-		p_AddBook.add(l_Title, c);
-		c.gridx = 1;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
-		c.gridy = 0;       //third row
-		p_AddBook.add(tf_Title, c);
-		c.gridx = 2;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
-		c.gridy = 0;       //third row
-		p_AddBook.add(l_Author, c);
-		c.gridx = 3;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
-		c.gridy = 0;       //third row
-		p_AddBook.add(tf_Author, c);
-		c.gridx = 4;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
-		c.gridy = 0;       //third row
-		p_AddBook.add(b_Add, c);
-		c.gridx = 0;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
-		c.gridy = 1;       //third row
-		p_AddBook.add(l_ISBN, c);
-		c.gridx = 1;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
-		c.gridy = 1;       //third row
-		p_AddBook.add(tf_ISBN, c);
-		c.gridx = 4;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
-		c.gridy = 1;       //third row
-		p_AddBook.add(b_Clear, c);
-		c.gridx = 0;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
-		c.gridy = 2;       //third row
-		p_AddBook.add(l_Edition, c);
-		c.gridx = 1;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
-		c.gridy = 2;       //third row
-		p_AddBook.add(tf_Edition, c);
-		c.gridx = 0;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
-		c.gridy = 3;       //third row
-		p_AddBook.add(l_Subject, c);
-		c.gridx = 1;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
-		c.gridy = 3;       //third row
-		p_AddBook.add(tf_Subject, c);
-		c.gridx = 0;       //aligned with button 2
-		c.gridwidth = 2;   //2 columns wide
-		c.gridy = 4;       //third row
-		p_AddBook.add(b_Go, c);
-		c.gridx = 2;       //aligned with button 2
-		c.gridwidth = 2;   //2 columns wide
-		c.gridy = 4;       //third row
-		p_AddBook.add(l_PossibleErrors, c);
-		
-//		c.weightx = 0.5;
-//		c.weighty = 0.5;
-//		c.gridx = 2;       //aligned with button 2
-//		c.gridwidth = 2;   //2 columns wide
-//		c.gridheight = 3;
-//		c.gridy = 1;       //third row
-//		p_AddBook.add(sp_ScrollPane);
+
 	}
 
 	void setupAddUpdateBorrower() {
+		cb_User = new JComboBox<String>();
+		l_FirstName = new JLabel("First Name:");
+		l_LastName = new JLabel("Last Name:");
+		l_Email = new JLabel("Email:");
+		l_PossibleErrors = new JLabel("No Errors Yet!");
+		tf_FirstName = new JTextField(20);
+		tf_LastName = new JTextField(20);
+		tf_Email = new JTextField(20);
+		b_Go = new JButton("Add User");
 
+		cb_User.addItem("Add New User...");
+
+		JPanel p_Top = new JPanel();
+		JPanel p_Mid = new JPanel();
+		JPanel p_Bottom = new JPanel();
+
+		p_Top.setBackground(bgColor);
+		p_Mid.setBackground(bgColor);
+		p_Bottom.setBackground(bgColor);
+
+		p_Top.add(cb_User);
+		p_Mid.setLayout(new GridLayout(3, 2, 50, 100));
+		p_Mid.add(l_FirstName);
+		p_Mid.add(tf_FirstName);
+		p_Mid.add(l_LastName);
+		p_Mid.add(tf_LastName);
+		p_Mid.add(l_Email);
+		p_Mid.add(tf_Email);
+		p_Bottom.add(b_Go);
+		p_Bottom.add(l_PossibleErrors);
+
+		p_AddUpdateBorrower.setLayout(new BorderLayout());
+		p_AddUpdateBorrower.add(p_Top, BorderLayout.NORTH);
+		p_AddUpdateBorrower.add(p_Mid, BorderLayout.CENTER);
+		p_AddUpdateBorrower.add(p_Bottom, BorderLayout.SOUTH);
 	}
 
 	void setupCheckout() {
-
+		l_Book = new JLabel("Book:");
+		l_Borrower = new JLabel("Borrower:");
+		l_Date = new JLabel("Date:");
+		l_DueDate = new JLabel("Due Date:");
+		cb_Books = new JComboBox<String>();
+		cb_User = new JComboBox<String>();
+		l_PossibleErrors = new JLabel("No Errors Yet");
+		b_Go = new JButton("Checkout");
+		
+		cb_Books.addItem("Any Book That is not currently checked out");
+		cb_User.addItem("Any User!");
+		
+		p_Checkout.setLayout(new GridLayout(5,2,50,50));
+		p_Checkout.add(l_Book);
+		p_Checkout.add(cb_Books);
+		p_Checkout.add(l_Borrower);
+		p_Checkout.add(cb_User);
+		p_Checkout.add(l_Date);
+		p_Checkout.add(new JLabel());
+		p_Checkout.add(l_DueDate);
+		p_Checkout.add(new JLabel());
+		p_Checkout.add(b_Go);
+		p_Checkout.add(l_PossibleErrors);
 	}
 
 	void setupReturn() {
+		l_Book = new JLabel("Book:");
+		l_Borrower = new JLabel("Borrower:");
+		l_Date = new JLabel("Date:");
+		l_DueDate = new JLabel("Date Due:");
+		cb_Books = new JComboBox<String>();
+		cb_User = new JComboBox<String>();
+		l_PossibleErrors = new JLabel("No Errors Yet");
+		b_Go = new JButton("Return");
+		
+		cb_Books.addItem("Any Book That is currently checked out");
+		
+		p_Return.setLayout(new GridLayout(5,2,50,50));
+		p_Return.add(l_Book);
+		p_Return.add(cb_Books);
+		p_Return.add(l_Borrower);
+		p_Return.add(new JLabel());
+		p_Return.add(l_Date);
+		p_Return.add(new JLabel());
+		p_Return.add(l_DueDate);
+		p_Return.add(new JLabel());
+		p_Return.add(b_Go);
+		p_Return.add(l_PossibleErrors);
 
 	}
 
@@ -188,27 +180,13 @@ public class LibraryViewer extends JFrame {
 		cb_Type = new JComboBox<String>();
 		cb_Type.addItem("DEPENDS ON SQL STATEMENT!");
 		l_PossibleErrors = new JLabel("No Errors YEt!");
-		l_PossibleErrors.setForeground(Color.RED);;
+		l_PossibleErrors.setForeground(Color.RED);
+		;
 		b_Go = new JButton("GO!");
-		//tm_TableModel = tm;
+		// tm_TableModel = tm;
 		t_Table = new JTable(tm_TableModel);
 		sp_ScrollPane = new JScrollPane(t_Table);
-		
-//		JPanel p_Top = new JPanel();
-//		p_Top.add(cb_PrepSQL);
-//		p_Top.add(cb_Type);
-//		
-//		JPanel p_Left = new JPanel();
-//		p_Left.add(sp_ScrollPane);
-//		
-//		JPanel p_Right = new JPanel();
-//		p_Right.add(b_Go);
-//		p_Right.add(l_PossibleErrors);
-//		
-//		p_List.add(p_Top);
-//		p_List.add(p_Left);
-//		p_List.add(p_Right);
-		
+
 		p_List.add(cb_PrepSQL);
 		p_List.add(cb_Type);
 		p_List.add(sp_ScrollPane);
@@ -216,53 +194,3 @@ public class LibraryViewer extends JFrame {
 		p_List.add(l_PossibleErrors);
 	}
 }
-//		p_Cards = new JPanel();
-//		p_Tabs = new JPanel();
-
-// b_AddBook = new JButton("Book");
-//		b_AddUpdateBorrower = new JButton("Borrowers");
-//		b_Checkout = new JButton("Checkout");
-//		b_Return = new JButton("Return");
-//		b_List = new JButton("List");
-
-//		MaryPoppins nanny = new MaryPoppins();
-
-//		b_AddBook.addActionListener(nanny);
-//		b_AddUpdateBorrower.addActionListener(nanny);
-//		b_Checkout.addActionListener(nanny);
-//		b_Return.addActionListener(nanny);
-//		b_List.addActionListener(nanny);
-
-//		p_Tabs.add(b_AddBook);
-//		p_Tabs.add(b_AddUpdateBorrower);
-//		p_Tabs.add(b_Checkout);
-//		p_Tabs.add(b_Return);
-//		p_Tabs.add(b_List);
-
-//		p_Cards.setLayout(cardLayout);
-//		cardLayout.show(p_Cards, "List");
-
-//		p_Cards.add(p_AddBook, "AddBook");
-//		p_Cards.add(p_AddUpdateBorrower, "AddUpdateBorrow");
-//		p_Cards.add(p_Checkout, "Checkout");
-//		p_Cards.add(p_Return, "Return");
-//		p_Cards.add(p_List, "List");
-//		this.add(p_Cards, BorderLayout.CENTER);
-
-//	class MaryPoppins implements ActionListener {
-//
-//		@Override
-//		public void actionPerformed(ActionEvent e) {
-//			if(e.getSource() == b_AddBook)
-//				cardLayout.show(p_Cards, "AddBook");
-//			else if(e.getSource() == b_AddUpdateBorrower)
-//				cardLayout.show(p_Cards, "AddUpdateBorrow");
-//			else if(e.getSource() == b_Checkout)
-//				cardLayout.show(p_Cards, "Checkout");
-//			else if(e.getSource() == b_Return)
-//				cardLayout.show(p_Cards, "Return");
-//			else if(e.getSource() == b_List)
-//				cardLayout.show(p_Cards, "List");
-//		}
-//		
-//	}
