@@ -10,6 +10,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.border.Border;
 import javax.swing.table.TableModel;
 import javax.swing.JFrame;
@@ -94,79 +95,99 @@ public class LibraryViewer extends JFrame {
 		tf_Subject = new JTextField(10);
 		
 		
-		b_Add = new JButton("Add Book");
-		b_Clear = new JButton("Add Author");
-		b_Go = new JButton("Clear Authors");
+		b_Go = new JButton("Add Book");
+		b_Add = new JButton("Add Author");
+		b_Clear = new JButton("Clear Authors");
 		
 		t_Table = new JTable(tm_TableModel);
 		sp_ScrollPane = new JScrollPane(t_Table);
-		
-		GridBagConstraints c = new GridBagConstraints();
-		
+		//p_AddBook.setLayout(new BoxLayout(p_AddBook, BoxLayout.X_AXIS));
 		p_AddBook.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.insets = new Insets(5, 5, 5, 5);
+		
+		
 		c.gridx = 0;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
+		//c.gridwidth = 1;   //2 columns wide
 		c.gridy = 0;       //third row
 		p_AddBook.add(l_Title, c);
+		
+		
 		c.gridx = 1;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
+		//c.gridwidth = 1;   //2 columns wide
 		c.gridy = 0;       //third row
 		p_AddBook.add(tf_Title, c);
+		
+		
 		c.gridx = 2;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
+		//c.gridwidth = 1;   //2 columns wide
 		c.gridy = 0;       //third row
 		p_AddBook.add(l_Author, c);
+		
 		c.gridx = 3;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
+		//c.gridwidth = 1;   //2 columns wide
 		c.gridy = 0;       //third row
 		p_AddBook.add(tf_Author, c);
+		
 		c.gridx = 4;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
+		//c.gridwidth = 1;   //2 columns wide
 		c.gridy = 0;       //third row
 		p_AddBook.add(b_Add, c);
+		
 		c.gridx = 0;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
+		//c.gridwidth = 1;   //2 columns wide
 		c.gridy = 1;       //third row
 		p_AddBook.add(l_ISBN, c);
+		
 		c.gridx = 1;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
+		//c.gridwidth = 1;   //2 columns wide
 		c.gridy = 1;       //third row
 		p_AddBook.add(tf_ISBN, c);
+		
+		c.gridx = 2;       //aligned with button 2
+		c.gridwidth = 2;   //2 columns wide
+		c.gridheight = 2;
+		c.gridy = 1;       //third row
+		p_AddBook.add(sp_ScrollPane, c);
+		
 		c.gridx = 4;       //aligned with button 2
-		c.gridwidth = 1;   //2 columns wide
+		//c.gridwidth = 1;   //2 columns wide
 		c.gridy = 1;       //third row
 		p_AddBook.add(b_Clear, c);
+		
 		c.gridx = 0;       //aligned with button 2
 		c.gridwidth = 1;   //2 columns wide
 		c.gridy = 2;       //third row
 		p_AddBook.add(l_Edition, c);
+		
 		c.gridx = 1;       //aligned with button 2
 		c.gridwidth = 1;   //2 columns wide
 		c.gridy = 2;       //third row
 		p_AddBook.add(tf_Edition, c);
+		
 		c.gridx = 0;       //aligned with button 2
 		c.gridwidth = 1;   //2 columns wide
 		c.gridy = 3;       //third row
 		p_AddBook.add(l_Subject, c);
+		
 		c.gridx = 1;       //aligned with button 2
 		c.gridwidth = 1;   //2 columns wide
 		c.gridy = 3;       //third row
 		p_AddBook.add(tf_Subject, c);
+		
 		c.gridx = 0;       //aligned with button 2
 		c.gridwidth = 2;   //2 columns wide
 		c.gridy = 4;       //third row
 		p_AddBook.add(b_Go, c);
+		
 		c.gridx = 2;       //aligned with button 2
 		c.gridwidth = 2;   //2 columns wide
 		c.gridy = 4;       //third row
 		p_AddBook.add(l_PossibleErrors, c);
 		
-//		c.weightx = 0.5;
-//		c.weighty = 0.5;
-//		c.gridx = 2;       //aligned with button 2
-//		c.gridwidth = 2;   //2 columns wide
-//		c.gridheight = 3;
-//		c.gridy = 1;       //third row
 //		p_AddBook.add(sp_ScrollPane);
 	}
 
