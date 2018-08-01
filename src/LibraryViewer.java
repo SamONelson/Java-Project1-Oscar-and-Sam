@@ -11,19 +11,18 @@ public class LibraryViewer extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	// CardLayout cardLayout;
-	Color bgColor = new Color(102, 51, 153);
-	JTable t_Table;
-	JScrollPane sp_ScrollPane;
-	TableModel tm_TableModel;
-	JButton b_Go, b_Add, b_Clear;
-	JLabel l_PossibleErrors, l_Title, l_ISBN, l_Edition, l_Subject, l_Author, l_FirstName, l_LastName, l_Email, l_Date,
-			l_DueDate, l_Book, l_Borrower;
-	JPanel /* p_Cards, p_Tabs, */ p_AddBook, p_AddUpdateBorrower, p_Checkout, p_Return, p_List;
-	JTextField tf_Author, tf_Title, tf_ISBN, tf_Edition, tf_Subject, tf_FirstName, tf_LastName, tf_Email;
+	private Color bgColor = new Color(102, 51, 153);
+	private JTable t_Table;
+	private JScrollPane sp_ScrollPane;
+	private TableModel tm_TableModel;
+	private JButton b_Go, b_Add, b_Clear;
+	private JLabel l_PossibleErrors, l_Title, l_ISBN, l_Edition, l_Subject, l_Author, l_FirstName, l_LastName, l_Email,
+			l_Date, l_DueDate, l_Book, l_Borrower;
+	private JPanel p_AddBook, p_AddUpdateBorrower, p_Checkout, p_Return, p_List;
+	private JTextField tf_Author, tf_Title, tf_ISBN, tf_Edition, tf_Subject, tf_FirstName, tf_LastName, tf_Email;
 
-	JComboBox<String> cb_PrepSQL, cb_Type, cb_User, cb_Books, cb_AuthorList;
-//	JButton b_AddBook, b_AddUpdateBorrower, b_Checkout, b_Return, b_List; 
-	JTabbedPane tp_Tabs;
+	private JComboBox<String> cb_PrepSQL, cb_Type, cb_User, cb_Books, cb_AuthorList;
+	private JTabbedPane tp_Tabs;
 
 	private class tabs {
 		static final int LIST = 0;
@@ -69,16 +68,11 @@ public class LibraryViewer extends JFrame {
 		p_Return.setBackground(bgColor);
 		p_List.setBackground(bgColor);
 		this.add(tp_Tabs);
+
 		this.setVisible(true);
-		
-		ListenerForButtons listen = new ListenerForButtons();
-		b_Go.addActionListener(listen);
-		b_Add.addActionListener(listen);
-		b_Clear.addActionListener(listen);
-		
 	}
 
-	void setupAddBook() { // HOLY FUCK I HATE THIS
+	void setupAddBook() {
 		l_Author = new JLabel("Author:");
 		l_Title = new JLabel("Title:");
 		l_ISBN = new JLabel("ISBN:");
@@ -162,6 +156,11 @@ public class LibraryViewer extends JFrame {
 		c.gridx = 2; // aligned with button 2
 		c.gridy = 4; // third row
 		p_AddBook.add(l_PossibleErrors, c);
+
+		ListenerForButtons listener = new ListenerForButtons();
+		b_Go.addActionListener(listener);
+		b_Add.addActionListener(listener);
+		b_Clear.addActionListener(listener);
 
 	}
 
@@ -257,8 +256,14 @@ public class LibraryViewer extends JFrame {
 
 	void setupList() {
 		cb_PrepSQL = new JComboBox<String>();
-		cb_PrepSQL.addItem("PREPARE SOME SQL STATEMENTS");
+		cb_PrepSQL.addItem("All Books In Library");
+		cb_PrepSQL.addItem("Books Out on loan");
+		cb_PrepSQL.addItem("Books on subject");
+		cb_PrepSQL.addItem("Books by Author");
+		cb_PrepSQL.addItem("All Borrowers");
+		cb_PrepSQL.addItem("Overdue books");
 		cb_Type = new JComboBox<String>();
+		// make a method that fills the combo box depending on context
 		cb_Type.addItem("DEPENDS ON SQL STATEMENT!");
 		l_PossibleErrors = new JLabel("No Errors YEt!");
 		l_PossibleErrors.setForeground(Color.RED);
@@ -288,20 +293,21 @@ public class LibraryViewer extends JFrame {
 		p_List.add(p_Top, BorderLayout.NORTH);
 		p_List.add(p_Middle, BorderLayout.CENTER);
 		p_List.add(p_Bottom, BorderLayout.SOUTH);
+		
+		ListenerForButtons listener = new ListenerForButtons();
+		b_Go.addActionListener(listener);
 	}
 
 	private class ListenerForButtons implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			System.out.println(tp_Tabs.getSelectedIndex() + " DJSA KASJD ");
+			System.out.println(tp_Tabs.getSelectedIndex() + " " + e.getActionCommand().toString());
 			if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
-				if(e.getSource() == b_Go) {
-					String sqlState = cb_PrepSQL.getSelectedItem().toString();
-					System.out.println(sqlState);
+				if (e.getActionCommand().equals("GO!")) {
+					int selected = cb_PrepSQL.getSelectedIndex();
 				}
-				
-				
+
 			} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
 
 			} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
