@@ -1,34 +1,3 @@
-
-//Imports are listed in full to show what's being used
-//could just import javax.swing.* and java.awt.* etc..
-
-import java.awt.EventQueue;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.border.Border;
-import javax.swing.table.TableModel;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.SwingConstants;
-import java.awt.Container;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.*;
@@ -58,7 +27,7 @@ public class LibraryViewer extends JFrame {
 	public LibraryViewer(/* TableModel tm */) {
 		super("Library Management V1.0 Oscar & Sam");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(700, 550);
+		this.setSize(500, 250);
 		this.setLocationRelativeTo(null);
 //		this.setResizable(false);
 
@@ -98,7 +67,7 @@ public class LibraryViewer extends JFrame {
 		l_PossibleErrors = new JLabel("No Errors YEt!");
 		l_PossibleErrors.setForeground(Color.BLUE);
 
-		tf_Author = new JTextField(10);
+		tf_Author = new JTextField(20);
 		tf_Title = new JTextField(10);
 		tf_ISBN = new JTextField(10);
 		tf_Edition = new JTextField(10);
@@ -158,7 +127,6 @@ public class LibraryViewer extends JFrame {
 		
 		c.gridx = 2;       //aligned with button 2
 		c.gridwidth = 2;   //2 columns wide
-		c.gridheight = 2;
 		c.gridy = 1;       //third row
 		p_AddBook.add(sp_ScrollPane, c);
 		
