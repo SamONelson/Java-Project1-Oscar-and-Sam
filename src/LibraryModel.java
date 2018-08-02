@@ -123,13 +123,7 @@ public class LibraryModel {
 	}
 
 	public void AddBook(ArrayList<String> book) {
-		/*
-		 * book.add(tf_Title.getText()); book.add(tf_ISBN.getText());
-		 * book.add(tf_Edition.getText()); book.add(tf_Subject.getText());
-		 */
-		sqlQuery = "INSERT INTO BOOK(Title, ISBN, Edition_Number, Subject) VALUES ('" + book.get(0) + "', '" + book.get(1)
-				+ "', '" + book.get(2) + "', '" + book.get(3).toLowerCase() + "');";
-		executeQueryAddBook();
+		executeQueryAddBook(book);
 		executeQueryAddAuthor(book);
 		executeQueryAddAuthorBook(book);
 	}
@@ -147,20 +141,27 @@ public class LibraryModel {
 				}
 			}
 		}
-		
-		for(int j = 0; j < Last.size(); j++) {
-			sqlQuery = "INSERT INTO BOOK_AUTHOR(BOOK_BOOKID, AUTHOR_AUTHORID) " +
-					"SELECT " +
-					"(SELECT BOOKID FROM BOOK WHERE ISBN = '" + book.get(1) + "'), " +
-					"(SELECT AUTHORID FROM AUTHOR WHERE LAST_NAME = '" + Last.get(j) +
-					"' AND FIRST_NAME = '" + First.get(j) +"');";
+
+		for (int j = 0; j < Last.size(); j++) {
+			try {
+				sqlQuery = "INSERT INTO BOOK_AUTHOR(BOOK_BOOKID, AUTHOR_AUTHORID) " + "SELECT "
+						+ "(SELECT BOOKID FROM BOOK WHERE ISBN = '" + book.get(1) + "'), "
+						+ "(SELECT AUTHORID FROM AUTHOR WHERE LAST_NAME = '" + Last.get(j) + "' AND FIRST_NAME = '"
+						+ First.get(j) + "');";
+				
+				myStmt.executeUpdate(sqlQuery);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		}
 	}
 
 	private void executeQueryAddAuthor(ArrayList<String> book) {
 		ArrayList<String> currentAuthors = getAuthors();
 		for (int i = 4; i < book.size(); i++) {
-			for (int j = 0; j < currentAuthors.size(); j++) {
+			for (int j = 0; j < currentAuthors.size() && i < book.size(); j++) {
 				if (currentAuthors.get(j).equals(book.get(i))) {
 					book.remove(i);
 					j = 0;
@@ -169,7 +170,7 @@ public class LibraryModel {
 		}
 		ArrayList<String> First = new ArrayList<String>();
 		ArrayList<String> Last = new ArrayList<String>();
-		for (int j = 0; j < book.size(); j++) {
+		for (int j = 4; j < book.size(); j++) {
 			if (book.get(j).contains(" ")) {
 				for (int i = 0; i < book.get(j).length(); i++) {
 					if (book.get(j).charAt(i) == ' ') {
@@ -192,8 +193,10 @@ public class LibraryModel {
 		}
 	}
 
-	private void executeQueryAddBook() {
+	private void executeQueryAddBook(ArrayList<String> book) {
 		try {
+			sqlQuery = "INSERT INTO BOOK(Title, ISBN, Edition_Number, Subject) VALUES ('" + book.get(0) + "', '"
+					+ book.get(1) + "', '" + book.get(2) + "', '" + book.get(3).toLowerCase() + "');";
 			myStmt.executeUpdate(sqlQuery);
 		} catch (SQLException e) {
 
