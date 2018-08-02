@@ -268,6 +268,11 @@ public class LibraryModel {
 					+ dtf.format(now.plusDays(7)) + "')";
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.executeUpdate();
+			
+			sqlQuery = "UPDATE BOOK SET AVAILABLE = 0 WHERE BOOKID = " + bookId;
+			myStmt = myConn.prepareStatement(sqlQuery);
+			myStmt.executeUpdate();
+			
 		} catch (SQLException e) {
 
 			e.printStackTrace();

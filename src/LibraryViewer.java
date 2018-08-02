@@ -384,15 +384,13 @@ public class LibraryViewer extends JFrame {
 								cb_Type.getItemCount() > 0 ? cb_Type.getSelectedItem().toString() : "");
 						tm_TableModel = model.getTable();
 						t_Table = new JTable(tm_TableModel);
-						t_Table.setCellSelectionEnabled(false);
-
+						
 						JScrollPane sp_Temp = new JScrollPane(t_Table);
 						JPanel temp = (JPanel) p_List.getComponent(1);
-
-						
-						
+			
 						temp.removeAll();
 						temp.add(sp_Temp);
+						
 						revalidate();
 					}
 
