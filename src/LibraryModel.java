@@ -127,7 +127,7 @@ public class LibraryModel {
 		 * book.add(tf_Title.getText()); book.add(tf_ISBN.getText());
 		 * book.add(tf_Edition.getText()); book.add(tf_Subject.getText());
 		 */
-		sqlQuery = "INSERT INTO BOOK(Title, ISBN, Edition, Subject) VALUES ('" + book.get(0) + "', '" + book.get(1)
+		sqlQuery = "INSERT INTO BOOK(Title, ISBN, Edition_Number, Subject) VALUES ('" + book.get(0) + "', '" + book.get(1)
 				+ "', '" + book.get(2) + "', '" + book.get(3).toLowerCase() + "');";
 		executeQueryAddBook();
 		executeQueryAddAuthor(book);

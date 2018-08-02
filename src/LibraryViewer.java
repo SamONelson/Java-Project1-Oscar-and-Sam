@@ -222,6 +222,7 @@ public class LibraryViewer extends JFrame {
 
 	void setupAddUpdateBorrower() {
 		p_AddUpdateBorrower.removeAll();
+		cb_User.removeAllItems();
 		
 		l_FirstName.setText("First Name:");
 		l_LastName.setText("Last Name:");
@@ -341,7 +342,7 @@ public class LibraryViewer extends JFrame {
 		l_PossibleErrors.setText("Select a Query!");
 		l_PossibleErrors.setForeground(Color.RED);
 
-		b_Go.setText("Select a Query!");
+		b_Go.setText("Go!");
 		t_Table = new JTable(tm_TableModel);
 		sp_ScrollPane = new JScrollPane(t_Table);
 	
@@ -378,7 +379,7 @@ public class LibraryViewer extends JFrame {
 			try {
 //				System.out.println(tp_Tabs.getSelectedIndex() + " " + e.getActionCommand().toString());
 				if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
-					if (e.getActionCommand().equals("GO!")) {
+					if (e.getSource().equals(b_Go)) {
 						int decision = cb_PrepSQL.getSelectedIndex();
 						model.ListPanelsqlStatement(decision,
 								cb_Type.getItemCount() > 0 ? cb_Type.getSelectedItem().toString() : "");
@@ -395,7 +396,6 @@ public class LibraryViewer extends JFrame {
 					}
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
-					System.out.println(e.getActionCommand().equals("Add Book"));
 					if (e.getActionCommand().equals("Add Author")) {
 						cb_AuthorList.addItem(tf_Author.getText());
 					} else if (e.getActionCommand().equals("Clear Author")) {
@@ -421,7 +421,7 @@ public class LibraryViewer extends JFrame {
 							l_PossibleErrors.setText("Added Successfully! ♥");
 						}
 						else
-							l_PossibleErrors.setText("One or More Fields were left Empty!");
+							l_PossibleErrors.setText("One or More Fields were left Empty! >:|");
 					}
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
 
