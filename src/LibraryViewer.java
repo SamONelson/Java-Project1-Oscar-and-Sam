@@ -177,7 +177,6 @@ public class LibraryViewer extends JFrame {
 		c.gridwidth = 1; // 2 columns wide
 		c.gridy = 3; // third row
 		p_AddBook.add(l_Subject, c);
-
 		c.weightx = 2.0;
 		c.gridx = 1; // aligned with button 2
 		c.gridy = 0; // third row
@@ -197,27 +196,20 @@ public class LibraryViewer extends JFrame {
 		c.gridx = 4; // aligned with button 2
 		c.gridy = 0; // third row
 		p_AddBook.add(b_Add, c);
-
 		c.gridx = 4; // aligned with button 2
 		c.gridwidth = 1; // 2 columns wide
 		c.gridy = 1; // third row
 		p_AddBook.add(b_Clear, c);
-
 		c.gridwidth = 2; // 2 columns wide
 		c.gridx = 2; // aligned with button 2
 		c.gridy = 1; // third row
 		p_AddBook.add(cb_AuthorList, c);
-
 		c.gridx = 0; // aligned with button 2
 		c.gridy = 4; // third row
 		p_AddBook.add(b_Go, c);
-
 		c.gridx = 2; // aligned with button 2
 		c.gridy = 4; // third row
 		p_AddBook.add(l_PossibleErrors, c);
-
-		
-
 	}
 
 	void setupAddUpdateBorrower() {
@@ -226,11 +218,15 @@ public class LibraryViewer extends JFrame {
 		
 		l_FirstName.setText("First Name:");
 		l_LastName.setText("Last Name:");
-		l_Email.setText("Last Name:");
+		l_Email.setText("Email:");
 		l_PossibleErrors.setText("Last Name:");
-		b_Go.setText("Last Name:");
+		b_Go.setText("Add Borrower");
 
-		cb_User.addItem("Add New User...");
+		cb_User.addItem("Add New User");
+		ArrayList<String> temp = model.getUsers();
+		for (int i = 0; i < temp.size(); i++) {
+			cb_User.addItem(temp.get(i));
+		}
 
 		p_Top.removeAll();
 		p_Mid.removeAll();
@@ -255,6 +251,9 @@ public class LibraryViewer extends JFrame {
 		p_AddUpdateBorrower.add(p_Top, BorderLayout.NORTH);
 		p_AddUpdateBorrower.add(p_Mid, BorderLayout.CENTER);
 		p_AddUpdateBorrower.add(p_Bottom, BorderLayout.SOUTH);
+		
+		ListenerForComboBox cb_Listener = new ListenerForComboBox();
+		cb_User.addItemListener(cb_Listener);
 	}
 
 	void setupCheckout() {
@@ -377,7 +376,6 @@ public class LibraryViewer extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			try {
-//				System.out.println(tp_Tabs.getSelectedIndex() + " " + e.getActionCommand().toString());
 				if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
 					if (e.getSource().equals(b_Go)) {
 						int decision = cb_PrepSQL.getSelectedIndex();
@@ -424,6 +422,9 @@ public class LibraryViewer extends JFrame {
 							l_PossibleErrors.setText("One or More Fields were left Empty! >:|");
 					}
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
+					if (e.getActionCommand().equals("Update Borrower")) {
+						
+					}
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
 
@@ -479,7 +480,31 @@ public class LibraryViewer extends JFrame {
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
 
-				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
+					
+					
+				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {					
+					if (e.getSource().equals(cb_User) && e.getStateChange() == ItemEvent.SELECTED) {
+						if (cb_User.getSelectedIndex() == 0) {
+							b_Go.setText("Add Borrower");
+
+						}
+						else if(cb_User.getSelectedIndex() != 0){
+							b_Go.setText("Update Borrower");
+							String fullname = cb_User.getSelectedItem().toString();
+							String last = "";
+							String first = "";
+							for (int i = 0; i < fullname.length(); i++) {
+								if (fullname.charAt(i) == ' ') {
+								last = fullname.substring(0, i);
+								first = fullname.substring(i + 1);
+								}
+							}
+							ArrayList<String> temp = model.getUserByName(first, last);
+							tf_FirstName.setText(temp.get(1));
+							tf_LastName.setText(temp.get(0));
+							tf_Email.setText(temp.get(2));
+						}
+					}
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
 

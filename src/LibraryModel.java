@@ -106,6 +106,13 @@ public class LibraryModel {
 		return items;
 
 	}
+	
+	public ArrayList<String> getUserByName(String fname, String lname) {
+		sqlQuery = "SELECT Last_Name, First_Name, Email FROM Borrower WHERE First_Name = '"+ fname +"' AND Last_Name = '"+ lname +"';";
+		executeQueryReturnArrayList();
+		return items;
+
+	}
 
 	// method to return authors in a list;
 	public ArrayList<String> getBooks(boolean OnlyAvailable) {

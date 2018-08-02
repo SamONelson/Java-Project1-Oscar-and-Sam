@@ -36,21 +36,6 @@ public class DBUtils {
 				columnNames.addElement(metaData.getColumnName(column));
 			}
 
-			/*
-			 * //new version as of July 12, 2018 Vector<Vector<Object>> rows = new
-			 * Vector<Vector<Object>>();
-			 * 
-			 * while (rs.next()) { Vector<Object> newRow = new Vector<Object>();
-			 * 
-			 * for (int i = 1; i <= numberOfColumns; i++) {
-			 * newRow.addElement(rs.getObject(i)); }//end for
-			 * 
-			 * rows.addElement(newRow); }//end while
-			 * 
-			 * //return the DefaultTableModel object to the line that called it return new
-			 * DefaultTableModel(rows, columnNames);
-			 */
-
 			// create a DefaultTableModel
 			DefaultTableModel model = new DefaultTableModel(columnNames, 0);
 
@@ -75,6 +60,12 @@ public class DBUtils {
 		return null;
 	}
 
+	/**
+	 * Method Name: resultSetToArayList Purpose: converts a ResultSet object to an
+	 * Arraylist object for use in a comboBox object.
+	 * Accepts: ResultSet from SQL
+	 * query Returns: arraylist object which can be used to add items to a comboBox.
+	 */
 	public static ArrayList<String> resultSetToArrayList(ResultSet rs) {
 		// get the metadata for number of columns and column names
 		try {
@@ -86,6 +77,7 @@ public class DBUtils {
 					temp.add(rs.getString(1));
 				}
 			}
+			
 			return temp;
 
 		} catch (SQLException e) {
