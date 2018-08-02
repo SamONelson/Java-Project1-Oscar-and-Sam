@@ -24,8 +24,8 @@ public class LibraryModel {
 		String First = "", Last = "";
 		if (category.contains(" ")) {
 			for (int i = 0; i < category.length(); i++) {
-				if (i == ' ') {
-					Last = category.substring(0, i - 1);
+				if (category.charAt(i) == ' ') {
+					Last = category.substring(0, i);
 					First = category.substring(i + 1);
 				}
 			}
@@ -56,7 +56,7 @@ public class LibraryModel {
 					+ "' AND a.First_Name = '" + First + "';";
 			break;
 		case 4:
-			sqlQuery = "SELECT First_Name AS 'First Name', Last_Name AS 'Last Name' FROM BORROWERS;";
+			sqlQuery = "SELECT First_Name AS 'First Name', Last_Name AS 'Last Name' FROM BORROWER;";
 			break;
 		case 5:
 			sqlQuery = "SELECT Title AS 'Title', First_Name AS 'First Name', Last_Name AS 'Last Name' "

@@ -70,42 +70,34 @@ public class LibraryViewer extends JFrame {
 		p_Checkout.setBackground(bgColor);
 		p_Return.setBackground(bgColor);
 		p_List.setBackground(bgColor);
-	
 
-		
-		
 		tp_Tabs.addChangeListener(new ChangeListener() {
 
-            @Override
-            public void stateChanged(ChangeEvent e) {
-            	System.out.println("SEL");
-            	if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
-                	cb_Type.removeAllItems();
-                	cb_Type.setVisible(false);
-                	cb_PrepSQL.setSelectedIndex(0);
-                }
-            	else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
-                	cb_AuthorList.removeAllItems();
-                }
-            	else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
-                	cb_User.removeAllItems();
-                	cb_User.addItem("Add New User...");
-                	// ADD TO CB_USER
-                }
-            	else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
-                	cb_Books.removeAllItems();
-                	cb_User.removeAllItems();
-                	// Populate Books
-                	// Populate Users
-                }
-            	else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
-                	cb_Books.removeAllItems();
-                	// Populate Books
-                }
-            }
-        });
-		
-		
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				System.out.println("SEL");
+				if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
+					cb_Type.removeAllItems();
+					cb_Type.setVisible(false);
+					cb_PrepSQL.setSelectedIndex(0);
+				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
+					cb_AuthorList.removeAllItems();
+				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
+					cb_User.removeAllItems();
+					cb_User.addItem("Add New User...");
+					// ADD TO CB_USER
+				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
+					cb_Books.removeAllItems();
+					cb_User.removeAllItems();
+					// Populate Books
+					// Populate Users
+				} else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
+					cb_Books.removeAllItems();
+					// Populate Books
+				}
+			}
+		});
+
 		this.add(tp_Tabs);
 		this.setVisible(true);
 	}
@@ -266,7 +258,7 @@ public class LibraryViewer extends JFrame {
 		p_Checkout.add(l_PossibleErrors);
 	}
 
-	void setupReturn() {	
+	void setupReturn() {
 		l_Book = new JLabel("Book:");
 		l_Borrower = new JLabel("Borrower:");
 		l_Date = new JLabel("Date:");
@@ -308,7 +300,7 @@ public class LibraryViewer extends JFrame {
 		b_Go = new JButton("GO!");
 		t_Table = new JTable(tm_TableModel);
 		sp_ScrollPane = new JScrollPane(t_Table);
-
+		t_Table.setCellSelectionEnabled(false);
 		JPanel p_Top = new JPanel();
 		JPanel p_Middle = new JPanel();
 		JPanel p_Bottom = new JPanel();
@@ -341,25 +333,36 @@ public class LibraryViewer extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			System.out.println(tp_Tabs.getSelectedIndex() + " " + e.getActionCommand().toString());
-			if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
-				if (e.getActionCommand().equals("GO!")) {
-					int decision = cb_PrepSQL.getSelectedIndex();
-					model.ListPanelsqlStatement(decision, cb_Type.getItemCount() > 0 ? cb_Type.getSelectedItem().toString() : "");
-					tm_TableModel = model.getTable();
-					t_Table = new JTable(tm_TableModel);
-					sp_ScrollPane.removeAll();
-					sp_ScrollPane.add(t_Table);
+			try {
+				System.out.println(tp_Tabs.getSelectedIndex() + " " + e.getActionCommand().toString());
+				if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
+					if (e.getActionCommand().equals("GO!")) {
+						int decision = cb_PrepSQL.getSelectedIndex();
+						model.ListPanelsqlStatement(decision,
+								cb_Type.getItemCount() > 0 ? cb_Type.getSelectedItem().toString() : "");
+						tm_TableModel = model.getTable();
+						t_Table = new JTable(tm_TableModel);
+						t_Table.setCellSelectionEnabled(false);
+
+						JScrollPane sp_Temp = new JScrollPane(t_Table);
+						JPanel temp = (JPanel) p_List.getComponent(1);
+
+						temp.removeAll();
+						temp.add(sp_Temp);
+						revalidate();
+					}
+
+				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
+
+				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
+
+				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
+
+				} else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
+
 				}
-
-			} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
-
-			} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
-
-			} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
-
-			} else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
-
+			} catch (Exception e1) {
+				l_PossibleErrors.setText(e1.getMessage());
 			}
 		}
 
@@ -369,6 +372,7 @@ public class LibraryViewer extends JFrame {
 
 		@Override
 		public void itemStateChanged(ItemEvent e) {
+			try {
 			if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
 				if (e.getSource().equals(cb_PrepSQL) && e.getStateChange() == ItemEvent.SELECTED) {
 					if (cb_PrepSQL.getSelectedIndex() == 0) {
@@ -415,6 +419,9 @@ public class LibraryViewer extends JFrame {
 			} else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
 
 			}
+		} catch(Exception e1) {
+			l_PossibleErrors.setText(e1.getMessage());
+		}
 		}
 
 	}
