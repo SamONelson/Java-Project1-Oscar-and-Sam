@@ -115,7 +115,7 @@ public class LibraryModel {
 		return null;
 	}
 
-	// method to return authors in a list;
+	// method to return users in a list;
 	public ArrayList<String> getUsers() {
 		try {
 			sqlQuery = "SELECT CONCAT(Last_Name, ' ' ,First_Name) AS 'Full Name' FROM Borrower;";
@@ -131,7 +131,7 @@ public class LibraryModel {
 	}
 	
 	public ArrayList<String> getUserByName(String fname, String lname) {
-		sqlQuery = "SELECT Last_Name, First_Name, Email FROM Borrower WHERE First_Name = '"+ fname +"' AND Last_Name = '"+ lname +"';";
+		sqlQuery = "SELECT * FROM Borrower WHERE First_Name = '"+ fname +"' AND Last_Name = '"+ lname +"';";
 		executeQueryReturnArrayList();
 		return items;
 

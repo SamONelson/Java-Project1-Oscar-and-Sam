@@ -499,18 +499,19 @@ public class LibraryViewer extends JFrame {
 						else if(cb_User.getSelectedIndex() != 0){
 							b_Go.setText("Update Borrower");
 							String fullname = cb_User.getSelectedItem().toString();
-							String last = "";
-							String first = "";
-							for (int i = 0; i < fullname.length(); i++) {
-								if (fullname.charAt(i) == ' ') {
-								last = fullname.substring(0, i);
-								first = fullname.substring(i + 1);
-								}
-							}
+//							String last = model.seperateSpace(fullname, false);
+//							String first = model.seperateSpace(fullname, true);
+							String first = "Mary";
+							String last = "Smith";
 							ArrayList<String> temp = model.getUserByName(first, last);
-							tf_FirstName.setText(temp.get(1));
-							tf_LastName.setText(temp.get(0));
-							tf_Email.setText(temp.get(2));
+							for(int i =0; i < temp.size(); i++)
+							{
+								System.out.println(temp.get(i));
+							}
+							
+//							tf_FirstName.setText(temp.get(1));
+//							tf_LastName.setText(temp.get(2));
+//							tf_Email.setText(temp.get(3));
 						}
 					}
 
