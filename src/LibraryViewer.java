@@ -21,7 +21,7 @@ public class LibraryViewer extends JFrame {
 	private JButton b_Go, b_Add, b_Clear;
 	private JLabel l_PossibleErrors, l_Title, l_ISBN, l_Edition, l_Subject, l_Author, l_FirstName, l_LastName, l_Email,
 			l_Date, l_DueDate, l_Book, l_Borrower;
-	private JPanel p_AddBook, p_AddUpdateBorrower, p_Checkout, p_Return, p_List;
+	private JPanel p_AddBook, p_AddUpdateBorrower, p_Checkout, p_Return, p_List, p_Top, p_Mid, p_Bottom;
 	private JTextField tf_Author, tf_Title, tf_ISBN, tf_Edition, tf_Subject, tf_FirstName, tf_LastName, tf_Email;
 
 	private JComboBox<String> cb_PrepSQL, cb_Type, cb_User, cb_Books, cb_AuthorList;
@@ -53,13 +53,54 @@ public class LibraryViewer extends JFrame {
 		p_Checkout = new JPanel();
 		p_Return = new JPanel();
 		p_List = new JPanel();
+		
+		t_Table = new JTable();
+		sp_ScrollPane = new JScrollPane();
+		b_Go = new JButton();
+		b_Add = new JButton();
+		b_Clear = new JButton();
+		l_PossibleErrors = new JLabel();
+		l_Title = new JLabel();
+		l_ISBN = new JLabel();
+		l_Edition = new JLabel();
+		l_Subject = new JLabel();
+		l_Author = new JLabel();
+		l_FirstName = new JLabel();
+		l_LastName = new JLabel();
+		l_Email = new JLabel();
+		l_Date = new JLabel();
+		l_DueDate = new JLabel();
+		l_Book = new JLabel();
+		l_Borrower = new JLabel();
+		
+		tf_Author = new JTextField(20);
+		tf_Title = new JTextField(20);
+		tf_ISBN = new JTextField(20);
+		tf_Edition = new JTextField(20);
+		tf_Subject = new JTextField(20);
+		tf_FirstName = new JTextField(20);
+		tf_LastName = new JTextField(20);
+		tf_Email = new JTextField(20);
+
+		cb_PrepSQL = new JComboBox<String>();
+		cb_Type = new JComboBox<String>();
+		cb_User = new JComboBox<String>(); 
+		cb_Books = new JComboBox<String>();
+		cb_AuthorList = new JComboBox<String>();
+		
+		p_Top = new JPanel();
+		p_Mid = new JPanel();
+		p_Bottom = new JPanel();
 
 		setupList();
-		setupAddBook();
-		setupAddUpdateBorrower();
-		setupCheckout();
-		setupReturn();
+		
 
+		ListenerForButtons listener = new ListenerForButtons();
+		b_Go.addActionListener(listener);
+		b_Add.addActionListener(listener);
+		b_Clear.addActionListener(listener);
+		
+		
 		tp_Tabs.add("List", p_List);
 		tp_Tabs.add("Add Book", p_AddBook);
 		tp_Tabs.add("Add/Update Borrower", p_AddUpdateBorrower);
@@ -75,26 +116,19 @@ public class LibraryViewer extends JFrame {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				System.out.println("SEL");
 				if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
-					cb_Type.removeAllItems();
-					cb_Type.setVisible(false);
+					setupList();
 					cb_PrepSQL.setSelectedIndex(0);
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
-					cb_AuthorList.removeAllItems();
+					setupAddBook();
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
-					cb_User.removeAllItems();
-					cb_User.addItem("Add New User...");
-					// ADD TO CB_USER
+					setupAddUpdateBorrower();
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
-					cb_Books.removeAllItems();
-					cb_User.removeAllItems();
-					// Populate Books
-					// Populate Users
+					setupCheckout();
 				} else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
-					cb_Books.removeAllItems();
-					// Populate Books
+					setupReturn();
 				}
+				revalidate();
 			}
 		});
 
@@ -103,26 +137,21 @@ public class LibraryViewer extends JFrame {
 	}
 
 	void setupAddBook() {
-		l_Author = new JLabel("Author:");
-		l_Title = new JLabel("Title:");
-		l_ISBN = new JLabel("ISBN:");
-		l_Edition = new JLabel("Edition:");
-		l_Subject = new JLabel("Subject:");
-		l_PossibleErrors = new JLabel("No Errors YEt!");
-		l_PossibleErrors.setForeground(Color.BLUE);
+		p_AddBook.removeAll();
+		
+		l_Author.setText("Author:");
+		l_Title.setText("Title:");
+		l_ISBN.setText("ISBN:");
+		l_Edition.setText("Edition:");
+		l_Subject.setText("Subject:");
+		l_PossibleErrors.setText("Author's Go (LastName FirstName)");
+		l_PossibleErrors.setForeground(Color.GREEN);
 
-		tf_Author = new JTextField(20);
-		tf_Title = new JTextField(10);
-		tf_ISBN = new JTextField(10);
-		tf_Edition = new JTextField(10);
-		tf_Subject = new JTextField(10);
+		b_Add.setText("Add Author");
+		b_Clear.setText("Clear Author");
+		b_Go.setText("Add Book");
 
-		b_Add = new JButton("Add Author");
-		b_Clear = new JButton("Clear Author");
-		b_Go = new JButton("Add Book");
-
-		cb_AuthorList = new JComboBox<String>();
-		cb_AuthorList.addItem("Authors...");
+		cb_AuthorList.removeAllItems();
 
 		p_AddBook.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -187,29 +216,24 @@ public class LibraryViewer extends JFrame {
 		c.gridy = 4; // third row
 		p_AddBook.add(l_PossibleErrors, c);
 
-		ListenerForButtons listener = new ListenerForButtons();
-		b_Go.addActionListener(listener);
-		b_Add.addActionListener(listener);
-		b_Clear.addActionListener(listener);
+		
 
 	}
 
 	void setupAddUpdateBorrower() {
-		cb_User = new JComboBox<String>();
-		l_FirstName = new JLabel("First Name:");
-		l_LastName = new JLabel("Last Name:");
-		l_Email = new JLabel("Email:");
-		l_PossibleErrors = new JLabel("No Errors Yet!");
-		tf_FirstName = new JTextField(20);
-		tf_LastName = new JTextField(20);
-		tf_Email = new JTextField(20);
-		b_Go = new JButton("Add User");
+		p_AddUpdateBorrower.removeAll();
+		
+		l_FirstName.setText("First Name:");
+		l_LastName.setText("Last Name:");
+		l_Email.setText("Last Name:");
+		l_PossibleErrors.setText("Last Name:");
+		b_Go.setText("Last Name:");
 
 		cb_User.addItem("Add New User...");
 
-		JPanel p_Top = new JPanel();
-		JPanel p_Mid = new JPanel();
-		JPanel p_Bottom = new JPanel();
+		p_Top.removeAll();
+		p_Mid.removeAll();
+		p_Bottom.removeAll();
 
 		p_Top.setBackground(bgColor);
 		p_Mid.setBackground(bgColor);
@@ -233,17 +257,27 @@ public class LibraryViewer extends JFrame {
 	}
 
 	void setupCheckout() {
-		l_Book = new JLabel("Book:");
-		l_Borrower = new JLabel("Borrower:");
-		l_Date = new JLabel("Date:");
-		l_DueDate = new JLabel("Due Date:");
-		cb_Books = new JComboBox<String>();
-		cb_User = new JComboBox<String>();
-		l_PossibleErrors = new JLabel("No Errors Yet");
-		b_Go = new JButton("Checkout");
+		p_Checkout.removeAll();
+		cb_Books.removeAllItems();
+		cb_User.removeAllItems();
+		
+		l_Book.setText("Book:");
+		l_Borrower.setText("Borrower:");
+		l_Date.setText("Date Current:");
+		l_DueDate.setText("Date Due:");
+		l_PossibleErrors.setText("Checkout a book!");
+		b_Go.setText("Check Out:");
 
-		cb_Books.addItem("Any Book That is not currently checked out");
-		cb_User.addItem("Any User!");
+		
+		// Populate Books
+		ArrayList<String> books = model.getBooks(true);
+		ArrayList<String> users = model.getUsers();
+		for (int i = 0; i < books.size(); i++) {
+			cb_Books.addItem(books.get(i));
+		}
+		for (int i = 0; i < users.size(); i++) {
+			cb_User.addItem(users.get(i));
+		}
 
 		p_Checkout.setLayout(new GridLayout(5, 2, 10, 10));
 		p_Checkout.add(l_Book);
@@ -259,17 +293,20 @@ public class LibraryViewer extends JFrame {
 	}
 
 	void setupReturn() {
-		l_Book = new JLabel("Book:");
-		l_Borrower = new JLabel("Borrower:");
-		l_Date = new JLabel("Date:");
-		l_DueDate = new JLabel("Date Due:");
-		cb_Books = new JComboBox<String>();
-		cb_User = new JComboBox<String>();
-		l_PossibleErrors = new JLabel("No Errors Yet");
-		b_Go = new JButton("Return");
+		p_Return.removeAll();
+		cb_Books.removeAllItems();
+		
+		l_Book.setText("Book:");
+		l_Borrower.setText("Borrower:");
+		l_Date.setText("Date Current:");
+		l_DueDate.setText("Date Due:");
+		l_PossibleErrors.setText("Return Thy book!");
+		b_Go.setText("Return Book");
 
-		cb_Books.addItem("Any Book That is currently checked out");
-
+		ArrayList<String> books = model.getBooks(false);
+		for (int i = 0; i < books.size(); i++) {
+			cb_Books.addItem(books.get(i));
+		}
 		p_Return.setLayout(new GridLayout(5, 2, 10, 10));
 		p_Return.add(l_Book);
 		p_Return.add(cb_Books);
@@ -285,33 +322,38 @@ public class LibraryViewer extends JFrame {
 	}
 
 	void setupList() {
-		cb_PrepSQL = new JComboBox<String>();
+		p_List.removeAll();
+		cb_PrepSQL.removeAllItems();
+		p_Top.removeAll();
+		p_Mid.removeAll();
+		p_Bottom.removeAll();
+		
+		
 		cb_PrepSQL.addItem("All Books In Library");
 		cb_PrepSQL.addItem("Books Out on loan");
 		cb_PrepSQL.addItem("Books on subject");
 		cb_PrepSQL.addItem("Books by Author");
 		cb_PrepSQL.addItem("All Borrowers");
 		cb_PrepSQL.addItem("Overdue books");
-		cb_Type = new JComboBox<String>();
+
 		cb_Type.setVisible(false);
-		l_PossibleErrors = new JLabel("No Errors YEt!");
+		
+		l_PossibleErrors.setText("Select a Query!");
 		l_PossibleErrors.setForeground(Color.RED);
 
-		b_Go = new JButton("GO!");
+		b_Go.setText("Select a Query!");
 		t_Table = new JTable(tm_TableModel);
 		sp_ScrollPane = new JScrollPane(t_Table);
-		t_Table.setCellSelectionEnabled(false);
-		JPanel p_Top = new JPanel();
-		JPanel p_Middle = new JPanel();
-		JPanel p_Bottom = new JPanel();
+	
+		
 		p_Top.setBackground(bgColor);
-		p_Middle.setBackground(bgColor);
+		p_Mid.setBackground(bgColor);
 		p_Bottom.setBackground(bgColor);
 
 		p_Top.add(cb_PrepSQL);
 		p_Top.add(cb_Type);
 
-		p_Middle.add(sp_ScrollPane);
+		p_Mid.add(sp_ScrollPane);
 
 		p_Bottom.add(b_Go);
 		p_Bottom.add(l_PossibleErrors);
@@ -319,7 +361,7 @@ public class LibraryViewer extends JFrame {
 		p_List.setLayout(new BorderLayout());
 
 		p_List.add(p_Top, BorderLayout.NORTH);
-		p_List.add(p_Middle, BorderLayout.CENTER);
+		p_List.add(p_Mid, BorderLayout.CENTER);
 		p_List.add(p_Bottom, BorderLayout.SOUTH);
 
 		ListenerForButtons b_Listener = new ListenerForButtons();
@@ -334,7 +376,7 @@ public class LibraryViewer extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			try {
-				System.out.println(tp_Tabs.getSelectedIndex() + " " + e.getActionCommand().toString());
+//				System.out.println(tp_Tabs.getSelectedIndex() + " " + e.getActionCommand().toString());
 				if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
 					if (e.getActionCommand().equals("GO!")) {
 						int decision = cb_PrepSQL.getSelectedIndex();
@@ -353,7 +395,34 @@ public class LibraryViewer extends JFrame {
 					}
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
-
+					System.out.println(e.getActionCommand().equals("Add Book"));
+					if (e.getActionCommand().equals("Add Author")) {
+						cb_AuthorList.addItem(tf_Author.getText());
+					} else if (e.getActionCommand().equals("Clear Author")) {
+						cb_AuthorList.removeItem(cb_AuthorList.getSelectedItem());
+						if (cb_AuthorList.getItemCount() == 0) { // Fixes problem with box not clearing itself
+							cb_AuthorList.removeAllItems();
+						}
+					} else if (e.getActionCommand().equals("Add Book")) {
+						ArrayList<String> book = new ArrayList<String>();
+						boolean noEmptySlots = true;
+						book.add(tf_Title.getText());
+						book.add(tf_ISBN.getText());
+						book.add(tf_Edition.getText());
+						book.add(tf_Subject.getText());
+						for (int i = 0; i < cb_AuthorList.getItemCount(); i++) {
+							book.add(cb_AuthorList.getItemAt(i).toString());
+						}
+						for (int i = 0; i < book.size(); i++)
+							if (book.get(i).toString().equals(""))
+								noEmptySlots = false;
+						if (noEmptySlots) {
+							model.AddBook(book);
+							l_PossibleErrors.setText("Added Successfully! ♥");
+						}
+						else
+							l_PossibleErrors.setText("One or More Fields were left Empty!");
+					}
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
@@ -373,55 +442,53 @@ public class LibraryViewer extends JFrame {
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			try {
-			if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
-				if (e.getSource().equals(cb_PrepSQL) && e.getStateChange() == ItemEvent.SELECTED) {
-					if (cb_PrepSQL.getSelectedIndex() == 0) {
-						cb_Type.setVisible(false);
-					}
-					if (cb_PrepSQL.getSelectedIndex() == 1) {
-						cb_Type.setVisible(false);
-					}
-					if (cb_PrepSQL.getSelectedIndex() == 2) {
-						System.out.println("Subject List Selected");
-						ArrayList<String> temp = model.getSubjects();
-						cb_Type.removeAllItems();
-						for (int i = 0; i < temp.size(); i++) {
-							cb_Type.addItem(temp.get(i));
+				if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
+					if (e.getSource().equals(cb_PrepSQL) && e.getStateChange() == ItemEvent.SELECTED) {
+						if (cb_PrepSQL.getSelectedIndex() == 0) {
+							cb_Type.setVisible(false);
 						}
-						cb_Type.setVisible(true);
-					}
-					if (cb_PrepSQL.getSelectedIndex() == 3) {
-						System.out.println("Author List Selected");
-						ArrayList<String> temp = model.getAuthors();
-						cb_Type.removeAllItems();
-						for (int i = 0; i < temp.size(); i++) {
-							cb_Type.addItem(temp.get(i));
+						if (cb_PrepSQL.getSelectedIndex() == 1) {
+							cb_Type.setVisible(false);
 						}
-						cb_Type.setVisible(true);
+						if (cb_PrepSQL.getSelectedIndex() == 2) {
+							ArrayList<String> temp = model.getSubjects();
+							cb_Type.removeAllItems();
+							for (int i = 0; i < temp.size(); i++) {
+								cb_Type.addItem(temp.get(i));
+							}
+							cb_Type.setVisible(true);
+						}
+						if (cb_PrepSQL.getSelectedIndex() == 3) {
+							ArrayList<String> temp = model.getAuthors();
+							cb_Type.removeAllItems();
+							for (int i = 0; i < temp.size(); i++) {
+								cb_Type.addItem(temp.get(i));
+							}
+							cb_Type.setVisible(true);
+						}
+						if (cb_PrepSQL.getSelectedIndex() == 4) {
+							cb_Type.setVisible(false);
+						}
+						if (cb_PrepSQL.getSelectedIndex() == 5) {
+							cb_Type.setVisible(false);
+						}
+						if (cb_PrepSQL.getSelectedIndex() == 6) {
+							cb_Type.setVisible(false);
+						}
 					}
-					if (cb_PrepSQL.getSelectedIndex() == 4) {
-						cb_Type.setVisible(false);
-					}
-					if (cb_PrepSQL.getSelectedIndex() == 5) {
-						cb_Type.setVisible(false);
-					}
-					if (cb_PrepSQL.getSelectedIndex() == 6) {
-						cb_Type.setVisible(false);
-					}
+
+				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
+
+				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
+
+				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
+
+				} else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
+
 				}
-
-			} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
-
-			} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
-
-			} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
-
-			} else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
-
+			} catch (Exception e1) {
+				l_PossibleErrors.setText(e1.getMessage());
 			}
-		} catch(Exception e1) {
-			l_PossibleErrors.setText(e1.getMessage());
-		}
 		}
 
 	}
