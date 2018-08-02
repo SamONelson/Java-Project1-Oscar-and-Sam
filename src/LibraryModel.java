@@ -128,18 +128,16 @@ public class LibraryModel {
 		executeQueryAddAuthorBook(book);
 	}
 
+	public void CheckOutBook(String title, String borrower) {
+		executeQueryAddBookLoan(title, borrower);
+	}
+
 	private void executeQueryAddAuthorBook(ArrayList<String> book) {
 		ArrayList<String> First = new ArrayList<String>();
 		ArrayList<String> Last = new ArrayList<String>();
-		for (int j = 0; j < book.size(); j++) {
-			if (book.get(j).contains(" ")) {
-				for (int i = 0; i < book.get(j).length(); i++) {
-					if (book.get(j).charAt(i) == ' ') {
-						Last.add(book.get(j).substring(0, i));
-						First.add(book.get(j).substring(i + 1));
-					}
-				}
-			}
+		for (int j = 4; j < book.size(); j++) {
+			Last.add(seperateSpace(book.get(j), false));
+			First.add(seperateSpace(book.get(j), true));
 		}
 
 		for (int j = 0; j < Last.size(); j++) {
@@ -148,7 +146,7 @@ public class LibraryModel {
 						+ "(SELECT BOOKID FROM BOOK WHERE ISBN = '" + book.get(1) + "'), "
 						+ "(SELECT AUTHORID FROM AUTHOR WHERE LAST_NAME = '" + Last.get(j) + "' AND FIRST_NAME = '"
 						+ First.get(j) + "');";
-				
+
 				myStmt.executeUpdate(sqlQuery);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -171,14 +169,8 @@ public class LibraryModel {
 		ArrayList<String> First = new ArrayList<String>();
 		ArrayList<String> Last = new ArrayList<String>();
 		for (int j = 4; j < book.size(); j++) {
-			if (book.get(j).contains(" ")) {
-				for (int i = 0; i < book.get(j).length(); i++) {
-					if (book.get(j).charAt(i) == ' ') {
-						Last.add(book.get(j).substring(0, i));
-						First.add(book.get(j).substring(i + 1));
-					}
-				}
-			}
+			Last.add(seperateSpace(book.get(j), false));
+			First.add(seperateSpace(book.get(j), true));
 		}
 		for (int i = 0; i < First.size(); i++) {
 			sqlQuery = "INSERT INTO author (Last_Name, First_Name) VALUES ('" + Last.get(i) + "','" + First.get(i)
@@ -206,6 +198,29 @@ public class LibraryModel {
 		}
 	}
 
+	private void executeQueryAddBookLoan(String title, String borrower) {
+		try {
+			sqlQuery = "SELECT BOOKID FROM BOOK WHERE TITLE ='" + title + "';";
+			executeQueryReturnArrayList();
+			int bookId = Integer.parseInt(items.get(0));
+			
+			sqlQuery = "SELECT BORROWER_ID FROM BORROWER WHERE Last_Name = '" + seperateSpace(borrower, false) + "' AND First_Name = '" + seperateSpace(borrower, true) + "';";
+			executeQueryReturnArrayList();
+			int borrowerId = Integer.parseInt(items.get(0));
+			
+			sqlQuery = "INSERT INTO BOOK_LOAN (BOOK_BOOKID, BORROWER_BORROWER_ID, COMMENT, DATE_OUT, DATE_DUE) " + 
+					"VALUES ()";
+			myStmt.executeUpdate(sqlQuery);
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		} finally {
+
+		}
+	}
+	
+	
+	
 	private void executeQueryReturnTable() {
 
 		try {
@@ -235,6 +250,24 @@ public class LibraryModel {
 		} finally {
 
 		}
+	}
 
+	private String seperateSpace(String toSeperate, boolean rightSide) {
+		String last = "";
+		String first = "";
+
+		if (toSeperate.contains(" ")) {
+			for (int i = 0; i < toSeperate.length(); i++) {
+				if (toSeperate.charAt(i) == ' ') {
+					first = toSeperate.substring(0, i);
+					last = toSeperate.substring(i + 1);
+				}
+			}
+		} else {
+			return toSeperate;
+		}
+		if (rightSide)
+			return last;
+		return first;
 	}
 }

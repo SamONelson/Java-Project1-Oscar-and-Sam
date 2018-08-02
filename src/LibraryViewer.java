@@ -396,14 +396,14 @@ public class LibraryViewer extends JFrame {
 					}
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
-					if (e.getActionCommand().equals("Add Author")) {
+					if (e.getSource().equals(b_Add)) {
 						cb_AuthorList.addItem(tf_Author.getText());
-					} else if (e.getActionCommand().equals("Clear Author")) {
+					} else if (e.getSource().equals(b_Clear)) {
 						cb_AuthorList.removeItem(cb_AuthorList.getSelectedItem());
 						if (cb_AuthorList.getItemCount() == 0) { // Fixes problem with box not clearing itself
 							cb_AuthorList.removeAllItems();
 						}
-					} else if (e.getActionCommand().equals("Add Book")) {
+					} else if (e.getSource().equals(b_Go)) {
 						ArrayList<String> book = new ArrayList<String>();
 						boolean noEmptySlots = true;
 						book.add(tf_Title.getText());
@@ -426,7 +426,9 @@ public class LibraryViewer extends JFrame {
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
-
+						if(e.getSource().equals(b_Go)) {
+							model.CheckOutBook(cb_Books.getSelectedItem().toString(), cb_User.getSelectedItem().toString());
+						}
 				} else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
 
 				}
