@@ -324,6 +324,7 @@ public class LibraryViewer extends JFrame {
 	void setupList() {
 		p_List.removeAll();
 		cb_PrepSQL.removeAllItems();
+		sp_ScrollPane.removeAll();
 		p_Top.removeAll();
 		p_Mid.removeAll();
 		p_Bottom.removeAll();
@@ -337,14 +338,14 @@ public class LibraryViewer extends JFrame {
 		cb_PrepSQL.addItem("Overdue books");
 
 		cb_Type.setVisible(false);
+		sp_ScrollPane.setVisible(false);
 		
 		l_PossibleErrors.setText("Select a Query!");
 		l_PossibleErrors.setForeground(Color.RED);
 
 		b_Go.setText("Go!");
 		t_Table = new JTable(tm_TableModel);
-		sp_ScrollPane = new JScrollPane(t_Table);
-	
+		sp_ScrollPane.add(t_Table);
 		
 		p_Top.setBackground(bgColor);
 		p_Mid.setBackground(bgColor);
@@ -388,20 +389,22 @@ public class LibraryViewer extends JFrame {
 						JScrollPane sp_Temp = new JScrollPane(t_Table);
 						JPanel temp = (JPanel) p_List.getComponent(1);
 
+						
+						
 						temp.removeAll();
 						temp.add(sp_Temp);
 						revalidate();
 					}
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
-					if (e.getActionCommand().equals("Add Author")) {
+					if (e.getSource().equals(b_Add)) {
 						cb_AuthorList.addItem(tf_Author.getText());
-					} else if (e.getActionCommand().equals("Clear Author")) {
+					} else if (e.getSource().equals(b_Clear)) {
 						cb_AuthorList.removeItem(cb_AuthorList.getSelectedItem());
 						if (cb_AuthorList.getItemCount() == 0) { // Fixes problem with box not clearing itself
 							cb_AuthorList.removeAllItems();
 						}
-					} else if (e.getActionCommand().equals("Add Book")) {
+					} else if (e.getSource().equals(b_Go)) {
 						ArrayList<String> book = new ArrayList<String>();
 						boolean noEmptySlots = true;
 						book.add(tf_Title.getText());
@@ -427,7 +430,12 @@ public class LibraryViewer extends JFrame {
 					}
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
-
+						if(e.getSource().equals(b_Go)) {
+							String title = cb_Books.getSelectedItem().toString(), borrower = cb_User.getSelectedItem().toString();
+							model.CheckOutBook(title, borrower);
+							setupCheckout();
+							l_PossibleErrors.setText("Checkout Successful");
+						}
 				} else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
 
 				}

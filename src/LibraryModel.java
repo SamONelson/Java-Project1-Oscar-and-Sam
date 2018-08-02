@@ -1,4 +1,6 @@
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.swing.table.*;
 
@@ -14,7 +16,7 @@ import javax.swing.table.*;
  */
 public class LibraryModel {
 	Connection myConn = null;
-	Statement myStmt = null;
+	PreparedStatement myStmt = null;
 	ResultSet myRslt = null;
 	private String sqlQuery = "";
 	private ArrayList<String> items;
@@ -74,8 +76,6 @@ public class LibraryModel {
 		String password = "password";
 		try {
 			myConn = DriverManager.getConnection(url, user, password);
-			myStmt = myConn.createStatement();
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -86,25 +86,48 @@ public class LibraryModel {
 
 	// method to return authors in a list;
 	public ArrayList<String> getAuthors() {
-		sqlQuery = "SELECT CONCAT(Last_Name, ' ' ,First_Name) AS 'Full Name' FROM Author;";
-		executeQueryReturnArrayList();
-		return items;
+		try {
+			sqlQuery = "SELECT CONCAT(Last_Name, ' ' ,First_Name) AS 'Full Name' FROM Author;";
+			myStmt = myConn.prepareStatement(sqlQuery);
+			executeQueryReturnArrayList();
+			return items;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+
+		}
+		return null;
 
 	}
 
 	// method to return authors in a list;
 	public ArrayList<String> getSubjects() {
-		sqlQuery = "SELECT DISTINCT SUBJECT AS 'Subject' FROM BOOK;";
-		executeQueryReturnArrayList();
-		return items;
+		try {
+			sqlQuery = "SELECT DISTINCT SUBJECT AS 'Subject' FROM BOOK;";
+			myStmt = myConn.prepareStatement(sqlQuery);
+			executeQueryReturnArrayList();
+			return items;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+
+		}
+		return null;
 	}
 
 	// method to return authors in a list;
 	public ArrayList<String> getUsers() {
-		sqlQuery = "SELECT CONCAT(Last_Name, ' ' ,First_Name) AS 'Full Name' FROM Borrower;";
-		executeQueryReturnArrayList();
-		return items;
+		try {
+			sqlQuery = "SELECT CONCAT(Last_Name, ' ' ,First_Name) AS 'Full Name' FROM Borrower;";
+			myStmt = myConn.prepareStatement(sqlQuery);
+			executeQueryReturnArrayList();
+			return items;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
 
+		}
+		return null;
 	}
 	
 	public ArrayList<String> getUserByName(String fname, String lname) {
@@ -116,17 +139,33 @@ public class LibraryModel {
 
 	// method to return authors in a list;
 	public ArrayList<String> getBooks(boolean OnlyAvailable) {
-		if (OnlyAvailable)
-			sqlQuery = "SELECT TITLE FROM BOOK WHERE AVAILABLE = 1;";
-		else
-			sqlQuery = "SELECT TITLE FROM BOOK WHERE AVAILABLE = 0;";
-		executeQueryReturnArrayList();
-		return items;
+		try {
+			if (OnlyAvailable)
+				sqlQuery = "SELECT TITLE FROM BOOK WHERE AVAILABLE = 1;";
+			else
+				sqlQuery = "SELECT TITLE FROM BOOK WHERE AVAILABLE = 0;";
+			myStmt = myConn.prepareStatement(sqlQuery);
+			executeQueryReturnArrayList();
+			return items;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+
+		}
+		return null;
 	}
 
 	public TableModel getTable() {
-		executeQueryReturnTable();
-		return tableModel;
+		try {
+			myStmt = myConn.prepareStatement(sqlQuery);
+			executeQueryReturnTable();
+			return tableModel;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+
+		}
+		return null;
 	}
 
 	public void AddBook(ArrayList<String> book) {
@@ -135,18 +174,16 @@ public class LibraryModel {
 		executeQueryAddAuthorBook(book);
 	}
 
+	public void CheckOutBook(String title, String borrower) {
+		executeQueryAddBookLoan(title, borrower);
+	}
+
 	private void executeQueryAddAuthorBook(ArrayList<String> book) {
 		ArrayList<String> First = new ArrayList<String>();
 		ArrayList<String> Last = new ArrayList<String>();
-		for (int j = 0; j < book.size(); j++) {
-			if (book.get(j).contains(" ")) {
-				for (int i = 0; i < book.get(j).length(); i++) {
-					if (book.get(j).charAt(i) == ' ') {
-						Last.add(book.get(j).substring(0, i));
-						First.add(book.get(j).substring(i + 1));
-					}
-				}
-			}
+		for (int j = 4; j < book.size(); j++) {
+			Last.add(seperateSpace(book.get(j), false));
+			First.add(seperateSpace(book.get(j), true));
 		}
 
 		for (int j = 0; j < Last.size(); j++) {
@@ -155,8 +192,8 @@ public class LibraryModel {
 						+ "(SELECT BOOKID FROM BOOK WHERE ISBN = '" + book.get(1) + "'), "
 						+ "(SELECT AUTHORID FROM AUTHOR WHERE LAST_NAME = '" + Last.get(j) + "' AND FIRST_NAME = '"
 						+ First.get(j) + "');";
-				
-				myStmt.executeUpdate(sqlQuery);
+				myStmt = myConn.prepareStatement(sqlQuery);
+				myStmt.executeUpdate();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -178,21 +215,16 @@ public class LibraryModel {
 		ArrayList<String> First = new ArrayList<String>();
 		ArrayList<String> Last = new ArrayList<String>();
 		for (int j = 4; j < book.size(); j++) {
-			if (book.get(j).contains(" ")) {
-				for (int i = 0; i < book.get(j).length(); i++) {
-					if (book.get(j).charAt(i) == ' ') {
-						Last.add(book.get(j).substring(0, i));
-						First.add(book.get(j).substring(i + 1));
-					}
-				}
-			}
+			Last.add(seperateSpace(book.get(j), false));
+			First.add(seperateSpace(book.get(j), true));
 		}
 		for (int i = 0; i < First.size(); i++) {
 			sqlQuery = "INSERT INTO author (Last_Name, First_Name) VALUES ('" + Last.get(i) + "','" + First.get(i)
 					+ "')";
 
 			try {
-				myStmt.executeUpdate(sqlQuery);
+				myStmt = myConn.prepareStatement(sqlQuery);
+				myStmt.executeUpdate();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -204,7 +236,38 @@ public class LibraryModel {
 		try {
 			sqlQuery = "INSERT INTO BOOK(Title, ISBN, Edition_Number, Subject) VALUES ('" + book.get(0) + "', '"
 					+ book.get(1) + "', '" + book.get(2) + "', '" + book.get(3).toLowerCase() + "');";
-			myStmt.executeUpdate(sqlQuery);
+			myStmt = myConn.prepareStatement(sqlQuery);
+			myStmt.executeUpdate();
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		} finally {
+
+		}
+	}
+
+	private void executeQueryAddBookLoan(String title, String borrower) {
+		try {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+			LocalDateTime now = LocalDateTime.now();
+			sqlQuery = "SELECT BOOKID FROM BOOK WHERE TITLE = ?";
+			myStmt = myConn.prepareStatement(sqlQuery);
+			myStmt.setString(1, title);
+			executeQueryReturnArrayList();
+			int bookId = Integer.parseInt(items.get(0));
+
+			sqlQuery = "SELECT BORROWER_ID FROM BORROWER WHERE Last_Name = '" + seperateSpace(borrower, false)
+					+ "' AND First_Name = '" + seperateSpace(borrower, true) + "';";
+			myStmt = myConn.prepareStatement(sqlQuery);
+			executeQueryReturnArrayList();
+			int borrowerId = Integer.parseInt(items.get(0));
+
+			sqlQuery = "INSERT INTO BOOK_LOAN (BOOK_BOOKID, BORROWER_BORROWER_ID, COMMENT, DATE_OUT, DATE_DUE) "
+					+ "VALUES ('" + bookId + "','" + borrowerId + "', '" + "Borrowed On " + now.getMonth() + " "
+					+ now.getDayOfWeek() + " " + now.getDayOfMonth() + "', '" + dtf.format(now) + "', '"
+					+ dtf.format(now.plusDays(7)) + "')";
+			myStmt = myConn.prepareStatement(sqlQuery);
+			myStmt.executeUpdate();
 		} catch (SQLException e) {
 
 			e.printStackTrace();
@@ -216,7 +279,7 @@ public class LibraryModel {
 	private void executeQueryReturnTable() {
 
 		try {
-			myRslt = myStmt.executeQuery(sqlQuery);
+			myRslt = myStmt.executeQuery();
 
 			tableModel = DBUtils.resultSetToTableModel(myRslt);
 
@@ -232,7 +295,7 @@ public class LibraryModel {
 	private void executeQueryReturnArrayList() {
 
 		try {
-			myRslt = myStmt.executeQuery(sqlQuery);
+			myRslt = myStmt.executeQuery();
 
 			items = DBUtils.resultSetToArrayList(myRslt);
 
@@ -242,6 +305,24 @@ public class LibraryModel {
 		} finally {
 
 		}
+	}
 
+	public String seperateSpace(String toSeperate, boolean rightSide) {
+		String last = "";
+		String first = "";
+
+		if (toSeperate.contains(" ")) {
+			for (int i = 0; i < toSeperate.length(); i++) {
+				if (toSeperate.charAt(i) == ' ') {
+					first = toSeperate.substring(0, i);
+					last = toSeperate.substring(i + 1);
+				}
+			}
+		} else {
+			return toSeperate;
+		}
+		if (rightSide)
+			return last;
+		return first;
 	}
 }
