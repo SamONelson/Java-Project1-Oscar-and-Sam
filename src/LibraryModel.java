@@ -146,12 +146,6 @@ public class LibraryModel {
 	}
 	
 
-		} finally {
-
-		}
-		return null;
-	}
-	
 	public void updateUser(String fname, String lname, String email, int ID) {
 		try {
 			//UPDATE Borrower SET First_Name = 'John', Last_Name = 'Doe', Borrower_email = 'JohnDoe@abc.com' WHERE Borrower_ID = 1;
