@@ -131,12 +131,54 @@ public class LibraryModel {
 	}
 	
 	public ArrayList<String> getUserByName(String fname, String lname) {
-		sqlQuery = "SELECT * FROM Borrower WHERE First_Name = '"+ fname +"' AND Last_Name = '"+ lname +"';";
-		executeQueryReturnArrayList();
-		return items;
-
+		try {
+			//sqlQuery = "SELECT * FROM Borrower WHERE First_Name = '"+fname+"' AND Last_Name = '"+lname+"';";
+			sqlQuery = "SELECT * FROM Borrower WHERE First_Name = ? AND Last_Name = ?;";
+			myStmt = myConn.prepareStatement(sqlQuery);
+			myStmt.setString(1, fname);
+			myStmt.setString(2, lname);
+			executeQueryReturnArrayList();
+			return items;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+	
+		}
+		return null;
 	}
+	
+	public void updateUser(String fname, String lname, String email, int ID) {
+		try {
+			//UPDATE Borrower SET First_Name = 'John', Last_Name = 'Doe', Borrower_email = 'JohnDoe@abc.com' WHERE Borrower_ID = 1;
+			sqlQuery = "UPDATE Borrower SET First_Name = ?, Last_Name = ?, Borrower_email = ? WHERE Borrower_ID = ?;";
+			myStmt = myConn.prepareStatement(sqlQuery);
+			myStmt.setString(1, fname);
+			myStmt.setString(2, lname);
+			myStmt.setString(3, email);
+			myStmt.setInt(4, ID);
+			myStmt.executeUpdate();
+		} catch (SQLException e) {
+		e.printStackTrace();
+		} finally {
 
+		}	
+	}
+	
+	public void addUser(String fname, String lname, String email) {
+		try {
+			sqlQuery = "INSERT INTO Borrower (First_Name, Last_Name, Borrower_email) VALUES(?, ?, ?);";
+			myStmt = myConn.prepareStatement(sqlQuery);
+			myStmt.setString(1, fname);
+			myStmt.setString(2, lname);
+			myStmt.setString(3, email);
+			myStmt.executeUpdate();
+		} catch (SQLException e) {
+		e.printStackTrace();
+		} finally {
+
+		}	
+	}
+	
 	// method to return authors in a list;
 	public ArrayList<String> getBooks(boolean OnlyAvailable) {
 		try {

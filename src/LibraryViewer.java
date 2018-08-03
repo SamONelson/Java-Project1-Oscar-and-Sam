@@ -27,6 +27,8 @@ public class LibraryViewer extends JFrame {
 	private JComboBox<String> cb_PrepSQL, cb_Type, cb_User, cb_Books, cb_AuthorList;
 	private JTabbedPane tp_Tabs;
 
+	private int ID;
+	
 	private class tabs {
 		static final int LIST = 0;
 		static final int ADDBOOK = 1;
@@ -424,7 +426,16 @@ public class LibraryViewer extends JFrame {
 					}
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
 					if (e.getActionCommand().equals("Update Borrower")) {
-						
+						model.updateUser(tf_FirstName.getText(), tf_LastName.getText(), tf_Email.getText(), ID);
+						l_PossibleErrors.setText("Update Complete!");
+						cb_User.setSelectedIndex(0);
+					}
+					else if (e.getActionCommand().equals("Add Borrower")) {
+						model.addUser(tf_FirstName.getText(), tf_LastName.getText(), tf_Email.getText());
+						l_PossibleErrors.setText("New borrower added!");
+						tf_FirstName.setText("");
+						tf_LastName.setText("");
+						tf_Email.setText("");
 					}
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
@@ -492,24 +503,26 @@ public class LibraryViewer extends JFrame {
 					if (e.getSource().equals(cb_User) && e.getStateChange() == ItemEvent.SELECTED) {
 						if (cb_User.getSelectedIndex() == 0) {
 							b_Go.setText("Add Borrower");
+							tf_FirstName.setText("");
+							tf_LastName.setText("");
+							tf_Email.setText("");
 
 						}
 						else if(cb_User.getSelectedIndex() != 0){
 							b_Go.setText("Update Borrower");
 							String fullname = cb_User.getSelectedItem().toString();
-//							String last = model.seperateSpace(fullname, false);
-//							String first = model.seperateSpace(fullname, true);
-							String first = "Mary";
-							String last = "Smith";
-							ArrayList<String> temp = model.getUserByName(first, last);
+							String lastname = model.seperateSpace(fullname, false);
+							String firstname = model.seperateSpace(fullname, true);
+							ArrayList<String> temp = model.getUserByName(firstname, lastname);
 							for(int i =0; i < temp.size(); i++)
 							{
+								System.out.print(i);
 								System.out.println(temp.get(i));
 							}
-							
-//							tf_FirstName.setText(temp.get(1));
-//							tf_LastName.setText(temp.get(2));
-//							tf_Email.setText(temp.get(3));
+							ID = Integer.parseInt(temp.get(0));
+							tf_LastName.setText(temp.get(1));
+							tf_FirstName.setText(temp.get(2));
+							tf_Email.setText(temp.get(3));
 						}
 					}
 
