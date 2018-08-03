@@ -62,8 +62,7 @@ public class DBUtils {
 
 	/**
 	 * Method Name: resultSetToArayList Purpose: converts a ResultSet object to an
-	 * Arraylist object for use in a comboBox object.
-	 * Accepts: ResultSet from SQL
+	 * Arraylist object for use in a comboBox object. Accepts: ResultSet from SQL
 	 * query Returns: arraylist object which can be used to add items to a comboBox.
 	 */
 	public static ArrayList<String> resultSetToArrayList(ResultSet rs) {
@@ -76,13 +75,13 @@ public class DBUtils {
 				while (rs.next()) {
 					temp.add(rs.getString(1));
 				}
-			int columnCount = metaData.getColumnCount();
-			while (rs.next()) {
-				for(int i = 1; i <= columnCount; i++)
-				temp.add(rs.getString(i));
+				int columnCount = metaData.getColumnCount();
+				while (rs.next()) {
+					for (int i = 1; i <= columnCount; i++)
+						temp.add(rs.getString(i));
+				}
 			}
-			
-			
+
 			return temp;
 
 		} catch (SQLException e) {
