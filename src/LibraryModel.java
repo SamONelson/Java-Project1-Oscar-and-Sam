@@ -132,6 +132,8 @@ public class LibraryModel {
 	
 	public ArrayList<String> getUserByName(String fname, String lname) {
 		try {
+<<<<<<< HEAD
+			//sqlQuery = "SELECT * FROM Borrower WHERE First_Name = '"+fname+"' AND Last_Name = '"+lname+"';";
 			sqlQuery = "SELECT * FROM Borrower WHERE First_Name = ? AND Last_Name = ?;";
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.setString(1, fname);
@@ -140,11 +142,21 @@ public class LibraryModel {
 			return items;
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {}
+		} finally {
+	
+=======
+		sqlQuery = "SELECT * FROM Borrower WHERE First_Name = '"+ fname +"' AND Last_Name = '"+ lname +"';";
+		myStmt = myConn.prepareStatement(sqlQuery);
+		executeQueryReturnArrayList();
+		return items;
+		} catch(SQLException e) {
+			e.printStackTrace();
+>>>>>>> c1600183fdcac4c601426692d7d33dfd4590f866
+		}
 		return null;
 	}
 	
-
+<<<<<<< HEAD
 	public void updateUser(String fname, String lname, String email, int ID) {
 		try {
 			//UPDATE Borrower SET First_Name = 'John', Last_Name = 'Doe', Borrower_email = 'JohnDoe@abc.com' WHERE Borrower_ID = 1;
@@ -157,10 +169,10 @@ public class LibraryModel {
 			myStmt.executeUpdate();
 		} catch (SQLException e) {
 		e.printStackTrace();
-		} finally {}
+		} finally {
 
 		}	
-
+=======
 	public ArrayList<String> getBookLoanStatus(String title) {
 		try {
 		sqlQuery = "SELECT CONCAT(Last_Name, ' ' ,First_Name) AS 'Full Name',BL.Date_Out as 'Date Out', BL.Date_Due as 'Date Due' FROM BORROWER AS BO INNER JOIN BOOK_LOAN AS BL ON " +
@@ -175,6 +187,7 @@ public class LibraryModel {
 			e.printStackTrace();
 		}
 		return null;
+>>>>>>> c1600183fdcac4c601426692d7d33dfd4590f866
 	}
 	
 	public void addUser(String fname, String lname, String email) {
@@ -229,8 +242,8 @@ public class LibraryModel {
 		executeQueryAddAuthorBook(book);
 	}
 
-	public void CheckOutBook(String title, String borrower, int weekPeriod) {
-		executeQueryAddBookLoan(title, borrower, weekPeriod);
+	public void CheckOutBook(String title, String borrower) {
+		executeQueryAddBookLoan(title, borrower);
 	}
 	
 	public void ReturnBook(String title) {
@@ -330,12 +343,9 @@ public class LibraryModel {
 
 	private void executeQueryAddBook(ArrayList<String> book) {
 		try {
-			sqlQuery = "INSERT INTO BOOK(Title, ISBN, Edition_Number, Subject) VALUES (?, ?, ?, ?)";
+			sqlQuery = "INSERT INTO BOOK(Title, ISBN, Edition_Number, Subject) VALUES ('" + book.get(0) + "', '"
+					+ book.get(1) + "', '" + book.get(2) + "', '" + book.get(3).toLowerCase() + "');";
 			myStmt = myConn.prepareStatement(sqlQuery);
-			myStmt.setString(1, book.get(0));
-			myStmt.setString(2, book.get(1));
-			myStmt.setString(3, book.get(2));
-			myStmt.setString(4, book.get(3));
 			myStmt.executeUpdate();
 		} catch (SQLException e) {
 
@@ -345,9 +355,8 @@ public class LibraryModel {
 		}
 	}
 
-	private void executeQueryAddBookLoan(String title, String borrower, int loanPeriod) {
+	private void executeQueryAddBookLoan(String title, String borrower) {
 		try {
-			loanPeriod *= 7;
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDateTime now = LocalDateTime.now();
 			sqlQuery = "SELECT BOOKID FROM BOOK WHERE TITLE = ?";
@@ -365,7 +374,7 @@ public class LibraryModel {
 			sqlQuery = "INSERT INTO BOOK_LOAN (BOOK_BOOKID, BORROWER_BORROWER_ID, COMMENT, DATE_OUT, DATE_DUE) "
 					+ "VALUES ('" + bookId + "','" + borrowerId + "', '" + "Borrowed On " + now.getMonth() + " "
 					+ now.getDayOfWeek() + " " + now.getDayOfMonth() + "', '" + dtf.format(now) + "', '"
-					+ dtf.format(now.plusDays(loanPeriod)) + "')";
+					+ dtf.format(now.plusDays(7)) + "')";
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.executeUpdate();
 			
