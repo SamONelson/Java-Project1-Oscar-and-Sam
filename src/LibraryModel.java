@@ -132,7 +132,6 @@ public class LibraryModel {
 	
 	public ArrayList<String> getUserByName(String fname, String lname) {
 		try {
-<<<<<<< HEAD
 			//sqlQuery = "SELECT * FROM Borrower WHERE First_Name = '"+fname+"' AND Last_Name = '"+lname+"';";
 			sqlQuery = "SELECT * FROM Borrower WHERE First_Name = ? AND Last_Name = ?;";
 			myStmt = myConn.prepareStatement(sqlQuery);
@@ -143,24 +142,15 @@ public class LibraryModel {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-	
-=======
-		sqlQuery = "SELECT * FROM Borrower WHERE First_Name = '"+ fname +"' AND Last_Name = '"+ lname +"';";
-		myStmt = myConn.prepareStatement(sqlQuery);
-		executeQueryReturnArrayList();
-		return items;
-		} catch(SQLException e) {
-			e.printStackTrace();
->>>>>>> c1600183fdcac4c601426692d7d33dfd4590f866
+
 		}
 		return null;
 	}
 	
-<<<<<<< HEAD
 	public void updateUser(String fname, String lname, String email, int ID) {
 		try {
 			//UPDATE Borrower SET First_Name = 'John', Last_Name = 'Doe', Borrower_email = 'JohnDoe@abc.com' WHERE Borrower_ID = 1;
-			sqlQuery = "UPDATE Borrower SET First_Name = ?, Last_Name = ?, Borrower_email = ? WHERE Borrower_ID = ?;";
+			sqlQuery = "UPDATE Borrower SET First_Name = ?, Last_Name = ?, Borrower_email = ? WHERE Borrower_ID = ?";
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.setString(1, fname);
 			myStmt.setString(2, lname);
@@ -172,7 +162,8 @@ public class LibraryModel {
 		} finally {
 
 		}	
-=======
+	}
+
 	public ArrayList<String> getBookLoanStatus(String title) {
 		try {
 		sqlQuery = "SELECT CONCAT(Last_Name, ' ' ,First_Name) AS 'Full Name',BL.Date_Out as 'Date Out', BL.Date_Due as 'Date Due' FROM BORROWER AS BO INNER JOIN BOOK_LOAN AS BL ON " +
@@ -187,7 +178,7 @@ public class LibraryModel {
 			e.printStackTrace();
 		}
 		return null;
->>>>>>> c1600183fdcac4c601426692d7d33dfd4590f866
+
 	}
 	
 	public void addUser(String fname, String lname, String email) {

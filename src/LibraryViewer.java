@@ -39,13 +39,13 @@ public class LibraryViewer extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		new LibraryViewer(/* TableModel */);
+		new LibraryViewer();
 	}
 
-	public LibraryViewer(/* TableModel tm */) {
+	public LibraryViewer() {
 		super("Library Management V1.0 Oscar & Sam");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(750, 250);
+		this.setSize(550, 250);
 		this.setLocationRelativeTo(null);
 //		this.setResizable(false);
 
@@ -225,7 +225,7 @@ public class LibraryViewer extends JFrame {
 		l_FirstName.setText("First Name:");
 		l_LastName.setText("Last Name:");
 		l_Email.setText("Email:");
-		l_PossibleErrors.setText("Last Name:");
+		l_PossibleErrors.setText("");
 		b_Go.setText("Add Borrower");
 
 		cb_User.addItem("Add New User");
@@ -435,24 +435,23 @@ public class LibraryViewer extends JFrame {
 						} else
 							l_PossibleErrors.setText("One or More Fields were left Empty! >:|");
 					}
+					
+					
+					
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
 					if (e.getActionCommand().equals("Update Borrower")) {
-<<<<<<< HEAD
 						model.updateUser(tf_FirstName.getText(), tf_LastName.getText(), tf_Email.getText(), ID);
+						setupAddUpdateBorrower();
 						l_PossibleErrors.setText("Update Complete!");
-						cb_User.setSelectedIndex(0);
 					}
 					else if (e.getActionCommand().equals("Add Borrower")) {
 						model.addUser(tf_FirstName.getText(), tf_LastName.getText(), tf_Email.getText());
+						setupAddUpdateBorrower();
 						l_PossibleErrors.setText("New borrower added!");
-						tf_FirstName.setText("");
-						tf_LastName.setText("");
-						tf_Email.setText("");
-=======
-
->>>>>>> c1600183fdcac4c601426692d7d33dfd4590f866
 					}
 
+					
+					
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
 					if (e.getSource().equals(b_Go)) {
 						String title = cb_Books.getSelectedItem().toString(),
@@ -518,6 +517,8 @@ public class LibraryViewer extends JFrame {
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
 
+					
+					
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
 					if (e.getSource().equals(cb_User) && e.getStateChange() == ItemEvent.SELECTED) {
 						if (cb_User.getSelectedIndex() == 0) {
@@ -529,36 +530,17 @@ public class LibraryViewer extends JFrame {
 						} else if (cb_User.getSelectedIndex() != 0) {
 							b_Go.setText("Update Borrower");
 							String fullname = cb_User.getSelectedItem().toString();
-<<<<<<< HEAD
 							String lastname = model.seperateSpace(fullname, false);
 							String firstname = model.seperateSpace(fullname, true);
 							ArrayList<String> temp = model.getUserByName(firstname, lastname);
-							for(int i =0; i < temp.size(); i++)
-							{
-								System.out.print(i);
-								System.out.println(temp.get(i));
-							}
 							ID = Integer.parseInt(temp.get(0));
 							tf_LastName.setText(temp.get(1));
 							tf_FirstName.setText(temp.get(2));
 							tf_Email.setText(temp.get(3));
-=======
-//							String last = model.seperateSpace(fullname, false);
-//							String first = model.seperateSpace(fullname, true);
-							String first = "Mary";
-							String last = "Smith";
-							ArrayList<String> temp = model.getUserByName(first, last);
-							for (int i = 0; i < temp.size(); i++) {
-								System.out.println(temp.get(i));
 							}
-
-//							tf_FirstName.setText(temp.get(1));
-//							tf_LastName.setText(temp.get(2));
-//							tf_Email.setText(temp.get(3));
->>>>>>> c1600183fdcac4c601426692d7d33dfd4590f866
-						}
 					}
 
+					
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
