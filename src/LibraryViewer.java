@@ -39,10 +39,10 @@ public class LibraryViewer extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		new LibraryViewer();
+		new LibraryViewer(/* TableModel */);
 	}
 
-	public LibraryViewer() {
+	public LibraryViewer(/* TableModel tm */) {
 		super("Library Management V1.0 Oscar & Sam");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(750, 250);
@@ -240,7 +240,7 @@ public class LibraryViewer extends JFrame {
 		l_FirstName.setText("First Name:");
 		l_LastName.setText("Last Name:");
 		l_Email.setText("Email:");
-		l_PossibleErrors.setText("");
+		l_PossibleErrors.setText("Last Name:");
 		b_Go.setText("Add Borrower");
 
 		cb_User.addItem("Add New User");
@@ -449,19 +449,15 @@ public class LibraryViewer extends JFrame {
 						} else
 							l_PossibleErrors.setText("One or More Fields were left Empty! >:|");
 					}
-					
-					
-					
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
 					if (e.getActionCommand().equals("Update Borrower")) {
 
 						model.updateUser(tf_FirstName.getText(), tf_LastName.getText(), tf_Email.getText(), ID);
-						setupAddUpdateBorrower();
 						l_PossibleErrors.setText("Update Complete!");
+						cb_User.setSelectedIndex(0);
 					}
 					else if (e.getActionCommand().equals("Add Borrower")) {
 						model.addUser(tf_FirstName.getText(), tf_LastName.getText(), tf_Email.getText());
-						setupAddUpdateBorrower();
 						l_PossibleErrors.setText("New borrower added!");
 						tf_FirstName.setText("");
 						tf_LastName.setText("");
@@ -568,16 +564,6 @@ public class LibraryViewer extends JFrame {
 //							tf_Email.setText(temp.get(3));
 
 						}
-							b_Go.setText("Update Borrower");
-							String fullname = cb_User.getSelectedItem().toString();
-							String lastname = model.seperateSpace(fullname, false);
-							String firstname = model.seperateSpace(fullname, true);
-							ArrayList<String> temp = model.getUserByName(firstname, lastname);
-							ID = Integer.parseInt(temp.get(0));
-							tf_LastName.setText(temp.get(1));
-							tf_FirstName.setText(temp.get(2));
-							tf_Email.setText(temp.get(3));
-							}
 					}
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
