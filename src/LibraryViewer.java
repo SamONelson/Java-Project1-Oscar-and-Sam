@@ -14,7 +14,7 @@ public class LibraryViewer extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static LibraryModel model = new LibraryModel();
 	// CardLayout cardLayout;
-	private Color bgColor = new Color(234,253,230);
+	private Color bgColor = new Color(234, 253, 230);
 	private JTable t_Table;
 	private JScrollPane sp_ScrollPane;
 	private TableModel tm_TableModel;
@@ -28,7 +28,7 @@ public class LibraryViewer extends JFrame {
 	private JTabbedPane tp_Tabs;
 
 	private int ID;
-	
+
 	private class tabs {
 		static final int LIST = 0;
 		static final int ADDBOOK = 1;
@@ -75,20 +75,19 @@ public class LibraryViewer extends JFrame {
 		l_DueDate = new JLabel();
 		l_Book = new JLabel();
 		l_Borrower = new JLabel();
-		l_PossibleErrors.setForeground(new Color(27,103,107));
-		l_Title.setForeground(new Color(27,103,107));
-		l_ISBN.setForeground(new Color(27,103,107));
-		l_Edition.setForeground(new Color(27,103,107));
-		l_Subject.setForeground(new Color(27,103,107));
-		l_Author.setForeground(new Color(27,103,107));
-		l_FirstName.setForeground(new Color(27,103,107));
-		l_LastName.setForeground(new Color(27,103,107));
-		l_Email.setForeground(new Color(27,103,107));
-		l_Date.setForeground(new Color(27,103,107));
-		l_DueDate.setForeground(new Color(27,103,107));
-		l_Book.setForeground(new Color(27,103,107));
-		l_Borrower.setForeground(new Color(27,103,107));
-		
+		l_PossibleErrors.setForeground(new Color(27, 103, 107));
+		l_Title.setForeground(new Color(27, 103, 107));
+		l_ISBN.setForeground(new Color(27, 103, 107));
+		l_Edition.setForeground(new Color(27, 103, 107));
+		l_Subject.setForeground(new Color(27, 103, 107));
+		l_Author.setForeground(new Color(27, 103, 107));
+		l_FirstName.setForeground(new Color(27, 103, 107));
+		l_LastName.setForeground(new Color(27, 103, 107));
+		l_Email.setForeground(new Color(27, 103, 107));
+		l_Date.setForeground(new Color(27, 103, 107));
+		l_DueDate.setForeground(new Color(27, 103, 107));
+		l_Book.setForeground(new Color(27, 103, 107));
+		l_Borrower.setForeground(new Color(27, 103, 107));
 
 		tf_Author = new JTextField(20);
 		tf_Title = new JTextField(20);
@@ -166,7 +165,6 @@ public class LibraryViewer extends JFrame {
 		l_Edition.setText("Edition:");
 		l_Subject.setText("Subject:");
 		l_PossibleErrors.setText("Author's Go (LastName FirstName)");
-		
 
 		b_Add.setText("Add Author");
 		b_Clear.setText("Clear Author");
@@ -370,15 +368,12 @@ public class LibraryViewer extends JFrame {
 		sp_ScrollPane.setVisible(false);
 
 		l_PossibleErrors.setText("Select a Query!");
-		
 
 		b_Go.setText("Go!");
 		t_Table = new JTable(tm_TableModel);
-		
+
 		sp_ScrollPane.add(t_Table);
-		
-		
-		
+
 		p_Top.setBackground(bgColor);
 		p_Mid.setBackground(bgColor);
 		p_Bottom.setBackground(bgColor);
@@ -449,17 +444,14 @@ public class LibraryViewer extends JFrame {
 						} else
 							l_PossibleErrors.setText("One or More Fields were left Empty! >:|");
 					}
-					
-					
-					
+
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
 					if (e.getActionCommand().equals("Update Borrower")) {
 
 						model.updateUser(tf_FirstName.getText(), tf_LastName.getText(), tf_Email.getText(), ID);
 						setupAddUpdateBorrower();
 						l_PossibleErrors.setText("Update Complete!");
-					}
-					else if (e.getActionCommand().equals("Add Borrower")) {
+					} else if (e.getActionCommand().equals("Add Borrower")) {
 						model.addUser(tf_FirstName.getText(), tf_LastName.getText(), tf_Email.getText());
 						setupAddUpdateBorrower();
 						l_PossibleErrors.setText("New borrower added!");
@@ -544,30 +536,6 @@ public class LibraryViewer extends JFrame {
 							tf_Email.setText("");
 
 						} else if (cb_User.getSelectedIndex() != 0) {
-//							b_Go.setText("Update Borrower");
-//							String fullname = cb_User.getSelectedItem().toString();
-//
-//							String lastname = model.seperateSpace(fullname, false);
-//							String firstname = model.seperateSpace(fullname, true);
-//							ArrayList<String> temp = model.getUserByName(firstname, lastname);
-//							for(int i =0; i < temp.size(); i++)
-//							{
-//								System.out.print(i);
-//								System.out.println(temp.get(i));
-//							}
-//							ID = Integer.parseInt(temp.get(0));
-//							tf_LastName.setText(temp.get(1));
-//							tf_FirstName.setText(temp.get(2));
-//							tf_Email.setText(temp.get(3));
-//
-//							String last = model.seperateSpace(fullname, false);
-//							String first = model.seperateSpace(fullname, true);
-
-//							tf_FirstName.setText(temp.get(1));
-//							tf_LastName.setText(temp.get(2));
-//							tf_Email.setText(temp.get(3));
-
-						}
 							b_Go.setText("Update Borrower");
 							String fullname = cb_User.getSelectedItem().toString();
 							String lastname = model.seperateSpace(fullname, false);
@@ -577,7 +545,7 @@ public class LibraryViewer extends JFrame {
 							tf_LastName.setText(temp.get(1));
 							tf_FirstName.setText(temp.get(2));
 							tf_Email.setText(temp.get(3));
-							}
+						}
 					}
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
