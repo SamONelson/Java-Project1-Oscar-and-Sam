@@ -370,6 +370,7 @@ public class LibraryViewer extends JFrame {
 		p_Top.add(cb_PrepSQL);
 		p_Top.add(cb_Type);
 
+		p_Mid.setLayout(new FlowLayout());
 		p_Mid.add(sp_ScrollPane);
 
 		p_Bottom.add(b_Go);
