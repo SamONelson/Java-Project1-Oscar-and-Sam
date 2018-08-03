@@ -129,12 +129,10 @@ public class LibraryModel {
 		}
 		return null;
 	}
-	
+
 	public ArrayList<String> getUserByName(String fname, String lname) {
 		try {
-<<<<<<< HEAD
-			//sqlQuery = "SELECT * FROM Borrower WHERE First_Name = '"+fname+"' AND Last_Name = '"+lname+"';";
-			sqlQuery = "SELECT * FROM Borrower WHERE First_Name = ? AND Last_Name = ?;";
+			sqlQuery = "SELECT * FROM Borrower WHERE First_Name = ? AND Last_Name = ?";
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.setString(1, fname);
 			myStmt.setString(2, lname);
@@ -143,23 +141,13 @@ public class LibraryModel {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-	
-=======
-		sqlQuery = "SELECT * FROM Borrower WHERE First_Name = '"+ fname +"' AND Last_Name = '"+ lname +"';";
-		myStmt = myConn.prepareStatement(sqlQuery);
-		executeQueryReturnArrayList();
-		return items;
-		} catch(SQLException e) {
-			e.printStackTrace();
->>>>>>> c1600183fdcac4c601426692d7d33dfd4590f866
 		}
+
 		return null;
 	}
-	
-<<<<<<< HEAD
+
 	public void updateUser(String fname, String lname, String email, int ID) {
 		try {
-			//UPDATE Borrower SET First_Name = 'John', Last_Name = 'Doe', Borrower_email = 'JohnDoe@abc.com' WHERE Borrower_ID = 1;
 			sqlQuery = "UPDATE Borrower SET First_Name = ?, Last_Name = ?, Borrower_email = ? WHERE Borrower_ID = ?;";
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.setString(1, fname);
@@ -168,28 +156,28 @@ public class LibraryModel {
 			myStmt.setInt(4, ID);
 			myStmt.executeUpdate();
 		} catch (SQLException e) {
-		e.printStackTrace();
+			e.printStackTrace();
 		} finally {
 
-		}	
-=======
+		}
+	}
+
 	public ArrayList<String> getBookLoanStatus(String title) {
 		try {
-		sqlQuery = "SELECT CONCAT(Last_Name, ' ' ,First_Name) AS 'Full Name',BL.Date_Out as 'Date Out', BL.Date_Due as 'Date Due' FROM BORROWER AS BO INNER JOIN BOOK_LOAN AS BL ON " +
-				   "BO.Borrower_ID = BL.Borrower_Borrower_ID INNER JOIN Book AS B ON B.BookID = BL.Book_BookID " +
-				   "WHERE b.Title = ?";
-		myStmt = myConn.prepareStatement(sqlQuery);
-		myStmt.setString(1, title);
-		executeQueryReturnArrayList();
-		
-		return items;
-		} catch(SQLException e) {
+			sqlQuery = "SELECT CONCAT(Last_Name, ' ' ,First_Name) AS 'Full Name',BL.Date_Out as 'Date Out', BL.Date_Due as 'Date Due' FROM BORROWER AS BO INNER JOIN BOOK_LOAN AS BL ON "
+					+ "BO.Borrower_ID = BL.Borrower_Borrower_ID INNER JOIN Book AS B ON B.BookID = BL.Book_BookID "
+					+ "WHERE b.Title = ?";
+			myStmt = myConn.prepareStatement(sqlQuery);
+			myStmt.setString(1, title);
+			executeQueryReturnArrayList();
+
+			return items;
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
->>>>>>> c1600183fdcac4c601426692d7d33dfd4590f866
 	}
-	
+
 	public void addUser(String fname, String lname, String email) {
 		try {
 			sqlQuery = "INSERT INTO Borrower (First_Name, Last_Name, Borrower_email) VALUES(?, ?, ?);";
@@ -199,12 +187,12 @@ public class LibraryModel {
 			myStmt.setString(3, email);
 			myStmt.executeUpdate();
 		} catch (SQLException e) {
-		e.printStackTrace();
+			e.printStackTrace();
 		} finally {
 
-		}	
+		}
 	}
-	
+
 	// method to return authors in a list;
 	public ArrayList<String> getBooks(boolean OnlyAvailable) {
 		try {
@@ -245,7 +233,7 @@ public class LibraryModel {
 	public void CheckOutBook(String title, String borrower) {
 		executeQueryAddBookLoan(title, borrower);
 	}
-	
+
 	public void ReturnBook(String title) {
 		executeQueryEndBookLoan(title);
 	}
@@ -256,11 +244,11 @@ public class LibraryModel {
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.setString(1, title);
 			executeQueryReturnArrayList();
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void executeQueryEndBookLoan(String title) {
 		try {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -268,25 +256,24 @@ public class LibraryModel {
 			executeQueryGetBookID(title);
 			String bookID = items.get(0);
 			String Name = getBookLoanStatus(title).get(0);
-			String BorrowerID = getUserByName(seperateSpace(Name, true),seperateSpace(Name, false)).get(0); 
-			
-			
-			sqlQuery = "UPDATE BOOK_LOAN SET DATE_RETURNED = ? WHERE Book_BookID = ? AND Borrower_Borrower_ID = ?" ;
+			String BorrowerID = getUserByName(seperateSpace(Name, true), seperateSpace(Name, false)).get(0);
+
+			sqlQuery = "UPDATE BOOK_LOAN SET DATE_RETURNED = ? WHERE Book_BookID = ? AND Borrower_Borrower_ID = ?";
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.setString(1, dtf.format(now));
 			myStmt.setString(2, bookID);
 			myStmt.setString(3, BorrowerID);
 			myStmt.executeUpdate();
-			
+
 			sqlQuery = "UPDATE BOOK SET Available = 1 WHERE BOOKID = ?";
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.setString(1, bookID);
 			myStmt.executeUpdate();
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void executeQueryAddAuthorBook(ArrayList<String> book) {
 		ArrayList<String> First = new ArrayList<String>();
 		ArrayList<String> Last = new ArrayList<String>();
@@ -343,12 +330,14 @@ public class LibraryModel {
 
 	private void executeQueryAddBook(ArrayList<String> book) {
 		try {
-			sqlQuery = "INSERT INTO BOOK(Title, ISBN, Edition_Number, Subject) VALUES ('" + book.get(0) + "', '"
-					+ book.get(1) + "', '" + book.get(2) + "', '" + book.get(3).toLowerCase() + "');";
+			sqlQuery = "INSERT INTO BOOK(Title, ISBN, Edition_Number, Subject) VALUES (?, ?, ?, ?)";
 			myStmt = myConn.prepareStatement(sqlQuery);
+			myStmt.setString(1, book.get(0));
+			myStmt.setString(2, book.get(1));
+			myStmt.setString(3, book.get(2));
+			myStmt.setString(4, book.get(3));
 			myStmt.executeUpdate();
 		} catch (SQLException e) {
-
 			e.printStackTrace();
 		} finally {
 
@@ -377,11 +366,11 @@ public class LibraryModel {
 					+ dtf.format(now.plusDays(7)) + "')";
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.executeUpdate();
-			
+
 			sqlQuery = "UPDATE BOOK SET AVAILABLE = 0 WHERE BOOKID = " + bookId;
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.executeUpdate();
-			
+
 		} catch (SQLException e) {
 
 			e.printStackTrace();
