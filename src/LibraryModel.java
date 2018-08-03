@@ -131,10 +131,31 @@ public class LibraryModel {
 	}
 	
 	public ArrayList<String> getUserByName(String fname, String lname) {
+		try {
 		sqlQuery = "SELECT * FROM Borrower WHERE First_Name = '"+ fname +"' AND Last_Name = '"+ lname +"';";
+		myStmt = myConn.prepareStatement(sqlQuery);
 		executeQueryReturnArrayList();
 		return items;
-
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public ArrayList<String> getBookLoanStatus(String title) {
+		try {
+		sqlQuery = "SELECT CONCAT(Last_Name, ' ' ,First_Name) AS 'Full Name',BL.Date_Out as 'Date Out', BL.Date_Due as 'Date Due' FROM BORROWER AS BO INNER JOIN BOOK_LOAN AS BL ON " +
+				   "BO.Borrower_ID = BL.Borrower_Borrower_ID INNER JOIN Book AS B ON B.BookID = BL.Book_BookID " +
+				   "WHERE b.Title = ?";
+		myStmt = myConn.prepareStatement(sqlQuery);
+		myStmt.setString(1, title);
+		executeQueryReturnArrayList();
+		
+		return items;
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	// method to return authors in a list;
@@ -177,7 +198,48 @@ public class LibraryModel {
 	public void CheckOutBook(String title, String borrower) {
 		executeQueryAddBookLoan(title, borrower);
 	}
+	
+	public void ReturnBook(String title) {
+		executeQueryEndBookLoan(title);
+	}
 
+	private void executeQueryGetBookID(String title) {
+		try {
+			sqlQuery = "SELECT BOOKID FROM BOOK WHERE TITLE = ?";
+			myStmt = myConn.prepareStatement(sqlQuery);
+			myStmt.setString(1, title);
+			executeQueryReturnArrayList();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void executeQueryEndBookLoan(String title) {
+		try {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			LocalDateTime now = LocalDateTime.now();
+			executeQueryGetBookID(title);
+			String bookID = items.get(0);
+			String Name = getBookLoanStatus(title).get(0);
+			String BorrowerID = getUserByName(seperateSpace(Name, true),seperateSpace(Name, false)).get(0); 
+			
+			
+			sqlQuery = "UPDATE BOOK_LOAN SET DATE_RETURNED = ? WHERE Book_BookID = ? AND Borrower_Borrower_ID = ?" ;
+			myStmt = myConn.prepareStatement(sqlQuery);
+			myStmt.setString(1, dtf.format(now));
+			myStmt.setString(2, bookID);
+			myStmt.setString(3, BorrowerID);
+			myStmt.executeUpdate();
+			
+			sqlQuery = "UPDATE BOOK SET Available = 1 WHERE BOOKID = ?";
+			myStmt = myConn.prepareStatement(sqlQuery);
+			myStmt.setString(1, bookID);
+			myStmt.executeUpdate();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private void executeQueryAddAuthorBook(ArrayList<String> book) {
 		ArrayList<String> First = new ArrayList<String>();
 		ArrayList<String> Last = new ArrayList<String>();
@@ -248,7 +310,7 @@ public class LibraryModel {
 
 	private void executeQueryAddBookLoan(String title, String borrower) {
 		try {
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDateTime now = LocalDateTime.now();
 			sqlQuery = "SELECT BOOKID FROM BOOK WHERE TITLE = ?";
 			myStmt = myConn.prepareStatement(sqlQuery);
