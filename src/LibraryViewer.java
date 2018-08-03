@@ -45,7 +45,7 @@ public class LibraryViewer extends JFrame {
 	public LibraryViewer() {
 		super("Library Management V1.0 Oscar & Sam");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(750, 250);
+		this.setSize(550, 250);
 		this.setLocationRelativeTo(null);
 //		this.setResizable(false);
 
