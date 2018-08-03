@@ -14,7 +14,7 @@ public class LibraryViewer extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static LibraryModel model = new LibraryModel();
 	// CardLayout cardLayout;
-	private Color bgColor = new Color(102, 51, 153);
+	private Color bgColor = new Color(234,253,230);
 	private JTable t_Table;
 	private JScrollPane sp_ScrollPane;
 	private TableModel tm_TableModel;
@@ -42,7 +42,7 @@ public class LibraryViewer extends JFrame {
 		new LibraryViewer(/* TableModel */);
 	}
 
-	public LibraryViewer(/* TableModel tm */) {
+	public LibraryViewer() {
 		super("Library Management V1.0 Oscar & Sam");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(750, 250);
@@ -55,7 +55,16 @@ public class LibraryViewer extends JFrame {
 		p_Checkout = new JPanel();
 		p_Return = new JPanel();
 		p_List = new JPanel();
+		
+		p_Top = new JPanel();
+		p_Mid = new JPanel();
+		p_Bottom = new JPanel();
 
+		p_Top.setBackground(new Color(234,253,230));
+		p_Mid.setBackground(new Color(234,253,230));
+		p_Bottom.setBackground(new Color(234,253,230));
+		
+		
 		t_Table = new JTable();
 		sp_ScrollPane = new JScrollPane();
 		b_Go = new JButton();
@@ -74,6 +83,20 @@ public class LibraryViewer extends JFrame {
 		l_DueDate = new JLabel();
 		l_Book = new JLabel();
 		l_Borrower = new JLabel();
+		
+		l_PossibleErrors.setForeground(new Color(27,103,107));
+		l_Title.setForeground(new Color(27,103,107));
+		l_ISBN.setForeground(new Color(27,103,107));
+		l_Edition.setForeground(new Color(27,103,107));
+		l_Subject.setForeground(new Color(27,103,107));
+		l_Author.setForeground(new Color(27,103,107));
+		l_FirstName.setForeground(new Color(27,103,107));
+		l_LastName.setForeground(new Color(27,103,107));
+		l_Email.setForeground(new Color(27,103,107));
+		l_Date.setForeground(new Color(27,103,107));
+		l_DueDate.setForeground(new Color(27,103,107));
+		l_Book.setForeground(new Color(27,103,107));
+		l_Borrower.setForeground(new Color(27,103,107));
 
 		tf_Author = new JTextField(20);
 		tf_Title = new JTextField(20);
@@ -90,9 +113,7 @@ public class LibraryViewer extends JFrame {
 		cb_Books = new JComboBox<String>();
 		cb_AuthorList = new JComboBox<String>();
 
-		p_Top = new JPanel();
-		p_Mid = new JPanel();
-		p_Bottom = new JPanel();
+		
 
 		setupList();
 
@@ -151,7 +172,6 @@ public class LibraryViewer extends JFrame {
 		l_Edition.setText("Edition:");
 		l_Subject.setText("Subject:");
 		l_PossibleErrors.setText("Author's Go (LastName FirstName)");
-		l_PossibleErrors.setForeground(Color.GREEN);
 
 		b_Add.setText("Add Author");
 		b_Clear.setText("Clear Author");
@@ -355,7 +375,7 @@ public class LibraryViewer extends JFrame {
 		sp_ScrollPane.setVisible(false);
 
 		l_PossibleErrors.setText("Select a Query!");
-		l_PossibleErrors.setForeground(Color.RED);
+		
 
 		b_Go.setText("Go!");
 		t_Table = new JTable(tm_TableModel);
