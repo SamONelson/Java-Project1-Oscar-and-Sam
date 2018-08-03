@@ -71,12 +71,12 @@ public class DBUtils {
 		try {
 			ResultSetMetaData metaData = rs.getMetaData();
 			ArrayList<String> temp = new ArrayList<String>();
-			if (metaData.getColumnCount() == 1) {
-				// get rows of data and store in vector
-				while (rs.next()) {
-					temp.add(rs.getString(1));
-				}
+			int columnCount = metaData.getColumnCount();
+			while (rs.next()) {
+				for(int i = 1; i <= columnCount; i++)
+				temp.add(rs.getString(i));
 			}
+			
 			
 			return temp;
 
