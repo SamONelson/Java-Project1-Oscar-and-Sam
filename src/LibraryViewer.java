@@ -45,7 +45,7 @@ public class LibraryViewer extends JFrame {
 	public LibraryViewer(/* TableModel tm */) {
 		super("Library Management V1.0 Oscar & Sam");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(500, 250);
+		this.setSize(750, 250);
 		this.setLocationRelativeTo(null);
 //		this.setResizable(false);
 
@@ -55,7 +55,7 @@ public class LibraryViewer extends JFrame {
 		p_Checkout = new JPanel();
 		p_Return = new JPanel();
 		p_List = new JPanel();
-		
+
 		t_Table = new JTable();
 		sp_ScrollPane = new JScrollPane();
 		b_Go = new JButton();
@@ -74,7 +74,7 @@ public class LibraryViewer extends JFrame {
 		l_DueDate = new JLabel();
 		l_Book = new JLabel();
 		l_Borrower = new JLabel();
-		
+
 		tf_Author = new JTextField(20);
 		tf_Title = new JTextField(20);
 		tf_ISBN = new JTextField(20);
@@ -86,23 +86,27 @@ public class LibraryViewer extends JFrame {
 
 		cb_PrepSQL = new JComboBox<String>();
 		cb_Type = new JComboBox<String>();
-		cb_User = new JComboBox<String>(); 
+		cb_User = new JComboBox<String>();
 		cb_Books = new JComboBox<String>();
 		cb_AuthorList = new JComboBox<String>();
-		
+
 		p_Top = new JPanel();
 		p_Mid = new JPanel();
 		p_Bottom = new JPanel();
 
 		setupList();
-		
 
 		ListenerForButtons listener = new ListenerForButtons();
 		b_Go.addActionListener(listener);
 		b_Add.addActionListener(listener);
 		b_Clear.addActionListener(listener);
-		
-		
+		ListenerForComboBox cb_Listener = new ListenerForComboBox();
+		cb_User.addItemListener(cb_Listener);
+		cb_PrepSQL.addItemListener(cb_Listener);
+		cb_AuthorList.addItemListener(cb_Listener);
+		cb_Books.addItemListener(cb_Listener);
+		cb_Type.addItemListener(cb_Listener);
+
 		tp_Tabs.add("List", p_List);
 		tp_Tabs.add("Add Book", p_AddBook);
 		tp_Tabs.add("Add/Update Borrower", p_AddUpdateBorrower);
@@ -140,7 +144,7 @@ public class LibraryViewer extends JFrame {
 
 	void setupAddBook() {
 		p_AddBook.removeAll();
-		
+
 		l_Author.setText("Author:");
 		l_Title.setText("Title:");
 		l_ISBN.setText("ISBN:");
@@ -217,7 +221,7 @@ public class LibraryViewer extends JFrame {
 	void setupAddUpdateBorrower() {
 		p_AddUpdateBorrower.removeAll();
 		cb_User.removeAllItems();
-		
+
 		l_FirstName.setText("First Name:");
 		l_LastName.setText("Last Name:");
 		l_Email.setText("Email:");
@@ -253,16 +257,13 @@ public class LibraryViewer extends JFrame {
 		p_AddUpdateBorrower.add(p_Top, BorderLayout.NORTH);
 		p_AddUpdateBorrower.add(p_Mid, BorderLayout.CENTER);
 		p_AddUpdateBorrower.add(p_Bottom, BorderLayout.SOUTH);
-		
-		ListenerForComboBox cb_Listener = new ListenerForComboBox();
-		cb_User.addItemListener(cb_Listener);
 	}
 
 	void setupCheckout() {
 		p_Checkout.removeAll();
 		cb_Books.removeAllItems();
 		cb_User.removeAllItems();
-		
+
 		l_Book.setText("Book:");
 		l_Borrower.setText("Borrower:");
 		l_Date.setText("Date Current:");
@@ -270,7 +271,6 @@ public class LibraryViewer extends JFrame {
 		l_PossibleErrors.setText("Checkout a book!");
 		b_Go.setText("Check Out:");
 
-		
 		// Populate Books
 		ArrayList<String> books = model.getBooks(true);
 		ArrayList<String> users = model.getUsers();
@@ -297,17 +297,31 @@ public class LibraryViewer extends JFrame {
 	void setupReturn() {
 		p_Return.removeAll();
 		cb_Books.removeAllItems();
-		
-		l_Book.setText("Book:");
-		l_Borrower.setText("Borrower:");
+
 		l_Date.setText("Date Current:");
 		l_DueDate.setText("Date Due:");
 		l_PossibleErrors.setText("Return Thy book!");
 		b_Go.setText("Return Book");
 
 		ArrayList<String> books = model.getBooks(false);
+
 		for (int i = 0; i < books.size(); i++) {
 			cb_Books.addItem(books.get(i));
+		}
+		if (books.size() > 0) {
+			String bookSelected = cb_Books.getSelectedItem().toString();
+			ArrayList<String> loanStatus = model.getBookLoanStatus(bookSelected);
+
+			l_Book.setText("Book: " + bookSelected);
+			l_Borrower.setText("Borrower: " + loanStatus.get(0));
+			l_Date.setText("Date Out: " + loanStatus.get(1));
+			l_DueDate.setText("Date Due:" + loanStatus.get(2));
+		} else {
+			l_Book.setText("Book: ");
+			l_Borrower.setText("Borrower: ");
+			l_Date.setText("Date Out: ");
+			l_DueDate.setText("Date Due:");
+			l_PossibleErrors.setText("THERE IS NO LOANS?!");
 		}
 		p_Return.setLayout(new GridLayout(5, 2, 10, 10));
 		p_Return.add(l_Book);
@@ -320,7 +334,6 @@ public class LibraryViewer extends JFrame {
 		p_Return.add(new JLabel());
 		p_Return.add(b_Go);
 		p_Return.add(l_PossibleErrors);
-
 	}
 
 	void setupList() {
@@ -330,8 +343,7 @@ public class LibraryViewer extends JFrame {
 		p_Top.removeAll();
 		p_Mid.removeAll();
 		p_Bottom.removeAll();
-		
-		
+
 		cb_PrepSQL.addItem("All Books In Library");
 		cb_PrepSQL.addItem("Books Out on loan");
 		cb_PrepSQL.addItem("Books on subject");
@@ -341,14 +353,18 @@ public class LibraryViewer extends JFrame {
 
 		cb_Type.setVisible(false);
 		sp_ScrollPane.setVisible(false);
-		
+
 		l_PossibleErrors.setText("Select a Query!");
 		l_PossibleErrors.setForeground(Color.RED);
 
 		b_Go.setText("Go!");
 		t_Table = new JTable(tm_TableModel);
+		t_Table.setSize(new Dimension(p_Mid.getWidth(), p_Mid.getHeight()));
 		sp_ScrollPane.add(t_Table);
 		
+		
+		sp_ScrollPane.setSize(new Dimension(p_Mid.getWidth(), p_Mid.getHeight()));
+
 		p_Top.setBackground(bgColor);
 		p_Mid.setBackground(bgColor);
 		p_Bottom.setBackground(bgColor);
@@ -356,6 +372,7 @@ public class LibraryViewer extends JFrame {
 		p_Top.add(cb_PrepSQL);
 		p_Top.add(cb_Type);
 
+		p_Mid.setLayout(new FlowLayout());
 		p_Mid.add(sp_ScrollPane);
 
 		p_Bottom.add(b_Go);
@@ -367,11 +384,6 @@ public class LibraryViewer extends JFrame {
 		p_List.add(p_Mid, BorderLayout.CENTER);
 		p_List.add(p_Bottom, BorderLayout.SOUTH);
 
-		ListenerForButtons b_Listener = new ListenerForButtons();
-		b_Go.addActionListener(b_Listener);
-
-		ListenerForComboBox cb_Listener = new ListenerForComboBox();
-		cb_PrepSQL.addItemListener(cb_Listener);
 	}
 
 	private class ListenerForButtons implements ActionListener {
@@ -386,13 +398,13 @@ public class LibraryViewer extends JFrame {
 								cb_Type.getItemCount() > 0 ? cb_Type.getSelectedItem().toString() : "");
 						tm_TableModel = model.getTable();
 						t_Table = new JTable(tm_TableModel);
-						
+
 						JScrollPane sp_Temp = new JScrollPane(t_Table);
 						JPanel temp = (JPanel) p_List.getComponent(1);
-			
+
 						temp.removeAll();
 						temp.add(sp_Temp);
-						
+
 						revalidate();
 					}
 
@@ -420,12 +432,12 @@ public class LibraryViewer extends JFrame {
 						if (noEmptySlots) {
 							model.AddBook(book);
 							l_PossibleErrors.setText("Added Successfully! ♥");
-						}
-						else
+						} else
 							l_PossibleErrors.setText("One or More Fields were left Empty! >:|");
 					}
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
 					if (e.getActionCommand().equals("Update Borrower")) {
+<<<<<<< HEAD
 						model.updateUser(tf_FirstName.getText(), tf_LastName.getText(), tf_Email.getText(), ID);
 						l_PossibleErrors.setText("Update Complete!");
 						cb_User.setSelectedIndex(0);
@@ -436,17 +448,26 @@ public class LibraryViewer extends JFrame {
 						tf_FirstName.setText("");
 						tf_LastName.setText("");
 						tf_Email.setText("");
+=======
+
+>>>>>>> c1600183fdcac4c601426692d7d33dfd4590f866
 					}
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
-						if(e.getSource().equals(b_Go)) {
-							String title = cb_Books.getSelectedItem().toString(), borrower = cb_User.getSelectedItem().toString();
-							model.CheckOutBook(title, borrower);
-							setupCheckout();
-							l_PossibleErrors.setText("Checkout Successful");
-						}
+					if (e.getSource().equals(b_Go)) {
+						String title = cb_Books.getSelectedItem().toString(),
+								borrower = cb_User.getSelectedItem().toString();
+						model.CheckOutBook(title, borrower);
+						setupCheckout();
+						l_PossibleErrors.setText("Checkout Successful");
+					}
 				} else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
-
+					if (e.getSource().equals(b_Go)) {
+						String title = cb_Books.getSelectedItem().toString();
+						model.ReturnBook(title);
+						setupReturn();
+						l_PossibleErrors.setText("Return Success.");
+					}
 				}
 			} catch (Exception e1) {
 				l_PossibleErrors.setText(e1.getMessage());
@@ -497,9 +518,7 @@ public class LibraryViewer extends JFrame {
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
 
-					
-					
-				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {					
+				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
 					if (e.getSource().equals(cb_User) && e.getStateChange() == ItemEvent.SELECTED) {
 						if (cb_User.getSelectedIndex() == 0) {
 							b_Go.setText("Add Borrower");
@@ -507,10 +526,10 @@ public class LibraryViewer extends JFrame {
 							tf_LastName.setText("");
 							tf_Email.setText("");
 
-						}
-						else if(cb_User.getSelectedIndex() != 0){
+						} else if (cb_User.getSelectedIndex() != 0) {
 							b_Go.setText("Update Borrower");
 							String fullname = cb_User.getSelectedItem().toString();
+<<<<<<< HEAD
 							String lastname = model.seperateSpace(fullname, false);
 							String firstname = model.seperateSpace(fullname, true);
 							ArrayList<String> temp = model.getUserByName(firstname, lastname);
@@ -523,13 +542,32 @@ public class LibraryViewer extends JFrame {
 							tf_LastName.setText(temp.get(1));
 							tf_FirstName.setText(temp.get(2));
 							tf_Email.setText(temp.get(3));
+=======
+//							String last = model.seperateSpace(fullname, false);
+//							String first = model.seperateSpace(fullname, true);
+							String first = "Mary";
+							String last = "Smith";
+							ArrayList<String> temp = model.getUserByName(first, last);
+							for (int i = 0; i < temp.size(); i++) {
+								System.out.println(temp.get(i));
+							}
+
+//							tf_FirstName.setText(temp.get(1));
+//							tf_LastName.setText(temp.get(2));
+//							tf_Email.setText(temp.get(3));
+>>>>>>> c1600183fdcac4c601426692d7d33dfd4590f866
 						}
 					}
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
-
+					String bookSelected = cb_Books.getSelectedItem().toString();
+					ArrayList<String> loanStatus = model.getBookLoanStatus(bookSelected);
+					l_Book.setText("Book: " + bookSelected);
+					l_Borrower.setText("Borrower: " + loanStatus.get(0));
+					l_Date.setText("Date Out: " + loanStatus.get(1));
+					l_DueDate.setText("Date Due:" + loanStatus.get(2));
 				}
 			} catch (Exception e1) {
 				l_PossibleErrors.setText(e1.getMessage());

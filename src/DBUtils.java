@@ -76,7 +76,12 @@ public class DBUtils {
 				while (rs.next()) {
 					temp.add(rs.getString(1));
 				}
+			int columnCount = metaData.getColumnCount();
+			while (rs.next()) {
+				for(int i = 1; i <= columnCount; i++)
+				temp.add(rs.getString(i));
 			}
+			
 			
 			return temp;
 
