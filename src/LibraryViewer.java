@@ -225,7 +225,7 @@ public class LibraryViewer extends JFrame {
 		l_FirstName.setText("First Name:");
 		l_LastName.setText("Last Name:");
 		l_Email.setText("Email:");
-		l_PossibleErrors.setText("Last Name:");
+		l_PossibleErrors.setText("");
 		b_Go.setText("Add Borrower");
 
 		cb_User.addItem("Add New User");
@@ -437,20 +437,17 @@ public class LibraryViewer extends JFrame {
 					}
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
 					if (e.getActionCommand().equals("Update Borrower")) {
-
-						model.updateUser(tf_FirstName.getText(), tf_LastName.getText(), tf_Email.getText(), ID);
-						l_PossibleErrors.setText("Update Complete!");
-						cb_User.setSelectedIndex(0);
+						String fname = tf_FirstName.getText();
+						model.updateUser(fname, tf_LastName.getText(), tf_Email.getText(), ID);
+						setupAddUpdateBorrower();
+						l_PossibleErrors.setText( fname + " has been Updated!");
 					}
 					else if (e.getActionCommand().equals("Add Borrower")) {
-						model.addUser(tf_FirstName.getText(), tf_LastName.getText(), tf_Email.getText());
-						l_PossibleErrors.setText("New borrower added!");
-						tf_FirstName.setText("");
-						tf_LastName.setText("");
-						tf_Email.setText("");
-
+						String fname = tf_FirstName.getText();
+						model.addUser(fname, tf_LastName.getText(), tf_Email.getText());
+						setupAddUpdateBorrower();
+						l_PossibleErrors.setText( fname + " has been added!");
 					}
-					setupAddUpdateBorrower();
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
 					if (e.getSource().equals(b_Go)) {

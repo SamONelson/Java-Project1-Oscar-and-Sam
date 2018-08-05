@@ -22,6 +22,20 @@ public class LibraryModel {
 	private ArrayList<String> items;
 	private TableModel tableModel;
 
+	public LibraryModel() {
+		String url = "jdbc:mysql://localhost:3306/info5051_books?useSSL=false&allowPublicKeyRetrieval=true";
+		String user = "root";
+		String password = "password";
+		try {
+			myConn = DriverManager.getConnection(url, user, password);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+
+		}
+
+	}
+	
 	public void ListPanelsqlStatement(int decision, String category) {
 		String First = "", Last = "";
 		if (category.contains(" ")) {
@@ -32,12 +46,6 @@ public class LibraryModel {
 				}
 			}
 		}
-//		cb_PrepSQL.addItem("All Books In Library");
-//		cb_PrepSQL.addItem("Books Out on loan");
-//		cb_PrepSQL.addItem("Books on subject");
-//		cb_PrepSQL.addItem("Books by Author");
-//		cb_PrepSQL.addItem("All Borrowers");
-//		cb_PrepSQL.addItem("Overdue books");
 		switch (decision) {
 		case 0:
 			sqlQuery = "SELECT Title, ISBN, Edition_Number AS 'Edition', Subject FROM BOOK;";
@@ -68,20 +76,6 @@ public class LibraryModel {
 			break;
 
 		}
-	}
-
-	public LibraryModel() {
-		String url = "jdbc:mysql://localhost:3306/info5051_books?useSSL=false&allowPublicKeyRetrieval=true";
-		String user = "root";
-		String password = "password";
-		try {
-			myConn = DriverManager.getConnection(url, user, password);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-
-		}
-
 	}
 
 	// method to return authors in a list;
@@ -193,7 +187,7 @@ public class LibraryModel {
 		}
 	}
 
-	// method to return authors in a list;
+	// method to return books in a list;
 	public ArrayList<String> getBooks(boolean OnlyAvailable) {
 		try {
 			if (OnlyAvailable)
@@ -315,11 +309,12 @@ public class LibraryModel {
 			First.add(seperateSpace(book.get(j), true));
 		}
 		for (int i = 0; i < First.size(); i++) {
-			sqlQuery = "INSERT INTO author (Last_Name, First_Name) VALUES ('" + Last.get(i) + "','" + First.get(i)
-					+ "')";
+			sqlQuery = "INSERT INTO author (Last_Name, First_Name) VALUES (?,?)";
 
 			try {
 				myStmt = myConn.prepareStatement(sqlQuery);
+				myStmt.setString(1, Last.get(i));
+				myStmt.setString(2, First.get(i));
 				myStmt.executeUpdate();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -354,9 +349,10 @@ public class LibraryModel {
 			executeQueryReturnArrayList();
 			int bookId = Integer.parseInt(items.get(0));
 
-			sqlQuery = "SELECT BORROWER_ID FROM BORROWER WHERE Last_Name = '" + seperateSpace(borrower, false)
-					+ "' AND First_Name = '" + seperateSpace(borrower, true) + "';";
+			sqlQuery = "SELECT BORROWER_ID FROM BORROWER WHERE Last_Name = ? AND First_Name = ?";
 			myStmt = myConn.prepareStatement(sqlQuery);
+			myStmt.setString(1, seperateSpace(borrower, false));
+			myStmt.setString(2, seperateSpace(borrower, true));
 			executeQueryReturnArrayList();
 			int borrowerId = Integer.parseInt(items.get(0));
 
