@@ -166,7 +166,7 @@ public class LibraryModel {
 		try {
 			sqlQuery = "SELECT CONCAT(Last_Name, ' ' ,First_Name) AS 'Full Name',BL.Date_Out as 'Date Out', BL.Date_Due as 'Date Due' FROM BORROWER AS BO INNER JOIN BOOK_LOAN AS BL ON "
 					+ "BO.Borrower_ID = BL.Borrower_Borrower_ID INNER JOIN Book AS B ON B.BookID = BL.Book_BookID "
-					+ "WHERE b.Title = ?";
+					+ "WHERE b.Title = ? ORDER BY BL.Date_Due DESC";
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.setString(1, title);
 			executeQueryReturnArrayList();
@@ -230,8 +230,8 @@ public class LibraryModel {
 		executeQueryAddAuthorBook(book);
 	}
 
-	public void CheckOutBook(String title, String borrower) {
-		executeQueryAddBookLoan(title, borrower);
+	public void CheckOutBook(String title, String borrower, int weeks) {
+		executeQueryAddBookLoan(title, borrower, weeks);
 	}
 
 	public void ReturnBook(String title) {
@@ -344,7 +344,7 @@ public class LibraryModel {
 		}
 	}
 
-	private void executeQueryAddBookLoan(String title, String borrower) {
+	private void executeQueryAddBookLoan(String title, String borrower, int weeks) {
 		try {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDateTime now = LocalDateTime.now();
@@ -363,7 +363,7 @@ public class LibraryModel {
 			sqlQuery = "INSERT INTO BOOK_LOAN (BOOK_BOOKID, BORROWER_BORROWER_ID, COMMENT, DATE_OUT, DATE_DUE) "
 					+ "VALUES ('" + bookId + "','" + borrowerId + "', '" + "Borrowed On " + now.getMonth() + " "
 					+ now.getDayOfWeek() + " " + now.getDayOfMonth() + "', '" + dtf.format(now) + "', '"
-					+ dtf.format(now.plusDays(7)) + "')";
+					+ dtf.format(now.plusDays(7 * weeks)) + "')";
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.executeUpdate();
 

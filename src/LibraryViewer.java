@@ -3,6 +3,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -14,7 +16,7 @@ public class LibraryViewer extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static LibraryModel model = new LibraryModel();
 	// CardLayout cardLayout;
-	private Color bgColor = new Color(234,253,230);
+	private Color bgColor = new Color(234, 253, 230);
 	private JTable t_Table;
 	private JScrollPane sp_ScrollPane;
 	private TableModel tm_TableModel;
@@ -27,8 +29,13 @@ public class LibraryViewer extends JFrame {
 	private JComboBox<String> cb_PrepSQL, cb_Type, cb_User, cb_Books, cb_AuthorList;
 	private JTabbedPane tp_Tabs;
 
+	private ButtonGroup bg_Group;
+	JRadioButton rb_oneWeek, rb_twoWeek, rb_threeWeek;
+
+	DateTimeFormatter dtf;
+
 	private int ID;
-	
+
 	private class tabs {
 		static final int LIST = 0;
 		static final int ADDBOOK = 1;
@@ -55,16 +62,15 @@ public class LibraryViewer extends JFrame {
 		p_Checkout = new JPanel();
 		p_Return = new JPanel();
 		p_List = new JPanel();
-		
+
 		p_Top = new JPanel();
 		p_Mid = new JPanel();
 		p_Bottom = new JPanel();
 
-		p_Top.setBackground(new Color(234,253,230));
-		p_Mid.setBackground(new Color(234,253,230));
-		p_Bottom.setBackground(new Color(234,253,230));
-		
-		
+		p_Top.setBackground(new Color(234, 253, 230));
+		p_Mid.setBackground(new Color(234, 253, 230));
+		p_Bottom.setBackground(new Color(234, 253, 230));
+
 		t_Table = new JTable();
 		sp_ScrollPane = new JScrollPane();
 		b_Go = new JButton();
@@ -83,20 +89,20 @@ public class LibraryViewer extends JFrame {
 		l_DueDate = new JLabel();
 		l_Book = new JLabel();
 		l_Borrower = new JLabel();
-		
-		l_PossibleErrors.setForeground(new Color(27,103,107));
-		l_Title.setForeground(new Color(27,103,107));
-		l_ISBN.setForeground(new Color(27,103,107));
-		l_Edition.setForeground(new Color(27,103,107));
-		l_Subject.setForeground(new Color(27,103,107));
-		l_Author.setForeground(new Color(27,103,107));
-		l_FirstName.setForeground(new Color(27,103,107));
-		l_LastName.setForeground(new Color(27,103,107));
-		l_Email.setForeground(new Color(27,103,107));
-		l_Date.setForeground(new Color(27,103,107));
-		l_DueDate.setForeground(new Color(27,103,107));
-		l_Book.setForeground(new Color(27,103,107));
-		l_Borrower.setForeground(new Color(27,103,107));
+
+		l_PossibleErrors.setForeground(new Color(27, 103, 107));
+		l_Title.setForeground(new Color(27, 103, 107));
+		l_ISBN.setForeground(new Color(27, 103, 107));
+		l_Edition.setForeground(new Color(27, 103, 107));
+		l_Subject.setForeground(new Color(27, 103, 107));
+		l_Author.setForeground(new Color(27, 103, 107));
+		l_FirstName.setForeground(new Color(27, 103, 107));
+		l_LastName.setForeground(new Color(27, 103, 107));
+		l_Email.setForeground(new Color(27, 103, 107));
+		l_Date.setForeground(new Color(27, 103, 107));
+		l_DueDate.setForeground(new Color(27, 103, 107));
+		l_Book.setForeground(new Color(27, 103, 107));
+		l_Borrower.setForeground(new Color(27, 103, 107));
 
 		tf_Author = new JTextField(20);
 		tf_Title = new JTextField(20);
@@ -113,7 +119,16 @@ public class LibraryViewer extends JFrame {
 		cb_Books = new JComboBox<String>();
 		cb_AuthorList = new JComboBox<String>();
 
-		
+		bg_Group = new ButtonGroup();
+		rb_oneWeek = new JRadioButton("One Week");
+		rb_twoWeek = new JRadioButton("Two Weeks");
+		rb_threeWeek = new JRadioButton("Three Weeks");
+
+		bg_Group.add(rb_oneWeek);
+		bg_Group.add(rb_twoWeek);
+		bg_Group.add(rb_threeWeek);
+
+		dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		setupList();
 
@@ -121,6 +136,10 @@ public class LibraryViewer extends JFrame {
 		b_Go.addActionListener(listener);
 		b_Add.addActionListener(listener);
 		b_Clear.addActionListener(listener);
+		rb_oneWeek.addActionListener(listener);
+		rb_twoWeek.addActionListener(listener);
+		rb_threeWeek.addActionListener(listener);
+
 		ListenerForComboBox cb_Listener = new ListenerForComboBox();
 		cb_User.addItemListener(cb_Listener);
 		cb_PrepSQL.addItemListener(cb_Listener);
@@ -280,16 +299,13 @@ public class LibraryViewer extends JFrame {
 	}
 
 	void setupCheckout() {
+		LocalDateTime now = LocalDateTime.now();
+
 		p_Checkout.removeAll();
 		cb_Books.removeAllItems();
 		cb_User.removeAllItems();
 
-		l_Book.setText("Book:");
-		l_Borrower.setText("Borrower:");
-		l_Date.setText("Date Current:");
-		l_DueDate.setText("Date Due:");
-		l_PossibleErrors.setText("Checkout a book!");
-		b_Go.setText("Check Out:");
+		rb_oneWeek.setSelected(true);
 
 		// Populate Books
 		ArrayList<String> books = model.getBooks(true);
@@ -300,8 +316,21 @@ public class LibraryViewer extends JFrame {
 		for (int i = 0; i < users.size(); i++) {
 			cb_User.addItem(users.get(i));
 		}
+		if (cb_Books.getItemCount() > 0 && cb_User.getItemCount() > 0) {
+			l_Book.setText("Book: " + cb_Books.getSelectedItem().toString());
+			l_Borrower.setText("Borrower: " + cb_User.getSelectedItem().toString());
+			l_PossibleErrors.setText("Checkout a book!");
+		} else {
+			l_Book.setText("Book:");
+			l_Borrower.setText("Borrower:");
+			l_PossibleErrors.setText("No Books Available!");
+		}
+		l_Date.setText("Date Current: " + dtf.format(now));
+		l_DueDate.setText("Date Due:" + dtf.format(now.plusDays(7)));
+		
+		b_Go.setText("Check Out");
 
-		p_Checkout.setLayout(new GridLayout(5, 2, 10, 10));
+		p_Checkout.setLayout(new GridLayout(6, 2, 10, 10));
 		p_Checkout.add(l_Book);
 		p_Checkout.add(cb_Books);
 		p_Checkout.add(l_Borrower);
@@ -309,7 +338,9 @@ public class LibraryViewer extends JFrame {
 		p_Checkout.add(l_Date);
 		p_Checkout.add(new JLabel());
 		p_Checkout.add(l_DueDate);
-		p_Checkout.add(new JLabel());
+		p_Checkout.add(rb_oneWeek);
+		p_Checkout.add(rb_twoWeek);
+		p_Checkout.add(rb_threeWeek);
 		p_Checkout.add(b_Go);
 		p_Checkout.add(l_PossibleErrors);
 	}
@@ -318,8 +349,6 @@ public class LibraryViewer extends JFrame {
 		p_Return.removeAll();
 		cb_Books.removeAllItems();
 
-		l_Date.setText("Date Current:");
-		l_DueDate.setText("Date Due:");
 		l_PossibleErrors.setText("Return Thy book!");
 		b_Go.setText("Return Book");
 
@@ -328,9 +357,9 @@ public class LibraryViewer extends JFrame {
 		for (int i = 0; i < books.size(); i++) {
 			cb_Books.addItem(books.get(i));
 		}
-		if (books.size() > 0) {
-			String bookSelected = cb_Books.getSelectedItem().toString();
-			ArrayList<String> loanStatus = model.getBookLoanStatus(bookSelected);
+		String bookSelected = cb_Books.getSelectedItem().toString();
+		ArrayList<String> loanStatus = model.getBookLoanStatus(bookSelected);
+		if (loanStatus.size() > 0) {
 
 			l_Book.setText("Book: " + bookSelected);
 			l_Borrower.setText("Borrower: " + loanStatus.get(0));
@@ -375,14 +404,12 @@ public class LibraryViewer extends JFrame {
 		sp_ScrollPane.setVisible(false);
 
 		l_PossibleErrors.setText("Select a Query!");
-		
 
 		b_Go.setText("Go!");
 		t_Table = new JTable(tm_TableModel);
 		t_Table.setSize(new Dimension(p_Mid.getWidth(), p_Mid.getHeight()));
 		sp_ScrollPane.add(t_Table);
-		
-		
+
 		sp_ScrollPane.setSize(new Dimension(p_Mid.getWidth(), p_Mid.getHeight()));
 
 		p_Top.setBackground(bgColor);
@@ -437,23 +464,33 @@ public class LibraryViewer extends JFrame {
 							cb_AuthorList.removeAllItems();
 						}
 					} else if (e.getSource().equals(b_Go)) {
-						ArrayList<String> book = new ArrayList<String>();
-						boolean noEmptySlots = true;
-						book.add(tf_Title.getText());
-						book.add(tf_ISBN.getText());
-						book.add(tf_Edition.getText());
-						book.add(tf_Subject.getText());
-						for (int i = 0; i < cb_AuthorList.getItemCount(); i++) {
-							book.add(cb_AuthorList.getItemAt(i).toString());
+						if (tf_ISBN.getText().toString().equals("") || tf_Title.getText().toString().equals("")
+								|| tf_Edition.getText().toString().equals("")
+								|| tf_Subject.getText().toString().equals("")) {
+							if (tf_ISBN.getText().length() == 13) {
+								ArrayList<String> book = new ArrayList<String>();
+								boolean noEmptySlots = true;
+								book.add(tf_Title.getText());
+								book.add(tf_ISBN.getText());
+								book.add(tf_Edition.getText());
+								book.add(tf_Subject.getText());
+								for (int i = 0; i < cb_AuthorList.getItemCount(); i++) {
+									book.add(cb_AuthorList.getItemAt(i).toString());
+								}
+								for (int i = 0; i < book.size(); i++)
+									if (book.get(i).toString().equals(""))
+										noEmptySlots = false;
+								if (noEmptySlots) {
+									model.AddBook(book);
+									l_PossibleErrors.setText("Added Successfully! ♥");
+								} else
+									l_PossibleErrors.setText("One or More Fields were left Empty! >:|");
+							} else {
+								l_PossibleErrors.setText("ISBN IS NOT VALID(13 Characters)");
+							}
+						} else {
+							l_PossibleErrors.setText("One or more fields is Empty!");
 						}
-						for (int i = 0; i < book.size(); i++)
-							if (book.get(i).toString().equals(""))
-								noEmptySlots = false;
-						if (noEmptySlots) {
-							model.AddBook(book);
-							l_PossibleErrors.setText("Added Successfully! ♥");
-						} else
-							l_PossibleErrors.setText("One or More Fields were left Empty! >:|");
 					}
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
 					if (e.getActionCommand().equals("Update Borrower")) {
@@ -461,8 +498,7 @@ public class LibraryViewer extends JFrame {
 						model.updateUser(tf_FirstName.getText(), tf_LastName.getText(), tf_Email.getText(), ID);
 						l_PossibleErrors.setText("Update Complete!");
 						cb_User.setSelectedIndex(0);
-					}
-					else if (e.getActionCommand().equals("Add Borrower")) {
+					} else if (e.getActionCommand().equals("Add Borrower")) {
 						model.addUser(tf_FirstName.getText(), tf_LastName.getText(), tf_Email.getText());
 						l_PossibleErrors.setText("New borrower added!");
 						tf_FirstName.setText("");
@@ -473,12 +509,21 @@ public class LibraryViewer extends JFrame {
 					setupAddUpdateBorrower();
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
+					LocalDateTime now = LocalDateTime.now();
 					if (e.getSource().equals(b_Go)) {
 						String title = cb_Books.getSelectedItem().toString(),
 								borrower = cb_User.getSelectedItem().toString();
-						model.CheckOutBook(title, borrower);
+						System.out.println(borrower);
+						model.CheckOutBook(title, borrower,
+								rb_oneWeek.isSelected() ? 1 : rb_twoWeek.isSelected() ? 2 : 3);
 						setupCheckout();
 						l_PossibleErrors.setText("Checkout Successful");
+					} else if (e.getSource().equals(rb_oneWeek)) {
+						l_DueDate.setText("Date Due: " + dtf.format(now.plusDays(7)));
+					} else if (e.getSource().equals(rb_twoWeek)) {
+						l_DueDate.setText("Date Due: " + dtf.format(now.plusDays(14)));
+					} else if (e.getSource().equals(rb_threeWeek)) {
+						l_DueDate.setText("Date Due: " + dtf.format(now.plusDays(21)));
 					}
 				} else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
 					if (e.getSource().equals(b_Go)) {
@@ -551,17 +596,18 @@ public class LibraryViewer extends JFrame {
 							String lastname = model.seperateSpace(fullname, false);
 							String firstname = model.seperateSpace(fullname, true);
 							ArrayList<String> temp = model.getUserByName(firstname, lastname);
-							
+
 							ID = Integer.parseInt(temp.get(0));
 							tf_LastName.setText(temp.get(1));
 							tf_FirstName.setText(temp.get(2));
 							tf_Email.setText(temp.get(3));
 						}
-						
+
 					}
 
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
-
+					l_Book.setText("Book: " + cb_Books.getSelectedItem().toString());
+					l_Borrower.setText("Borrower: " + cb_User.getSelectedItem().toString());
 				} else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
 					String bookSelected = cb_Books.getSelectedItem().toString();
 					ArrayList<String> loanStatus = model.getBookLoanStatus(bookSelected);
