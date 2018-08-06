@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import javax.swing.table.*;
 
 /**
- * Name: Sam Nelson
+ * Name: Sam Nelson, Oscar Stockmann
  * Date: Aug 1, 2018
  * Purpose: 
- * Student Number 0785337
+ * Student Number 0785337, 0811960
  */
 
 /**
- * Program Name: Project 1 Coder: Sam Date: Aug 1, 2018 Purpose:
+ * Program Name: Project 1 Coder: Sam, Oscar Date: Aug 1, 2018 Purpose:
  */
 public class LibraryModel {
 	Connection myConn = null;
@@ -23,6 +23,7 @@ public class LibraryModel {
 	private TableModel tableModel;
 
 	public LibraryModel() {
+		//setup database connection
 		String url = "jdbc:mysql://localhost:3306/info5051_books?useSSL=false&allowPublicKeyRetrieval=true";
 		String user = "root";
 		String password = "password";
@@ -36,6 +37,7 @@ public class LibraryModel {
 
 	}
 	
+	//selects the query for the jtable
 	public void ListPanelsqlStatement(int decision, String category) {
 		String First = "", Last = "";
 		if (category.contains(" ")) {
@@ -46,6 +48,9 @@ public class LibraryModel {
 				}
 			}
 		}
+		//based on the element chosen in the first combo box 
+		//along with the additional info obtained from the second combo box
+		//the switch selects the corresponding query
 		switch (decision) {
 		case 0:
 			sqlQuery = "SELECT Title, ISBN, Edition_Number AS 'Edition', Subject FROM BOOK;";
@@ -94,7 +99,7 @@ public class LibraryModel {
 
 	}
 
-	// method to return authors in a list;
+	// method to return book subjects in a list
 	public ArrayList<String> getSubjects() {
 		try {
 			sqlQuery = "SELECT DISTINCT SUBJECT AS 'Subject' FROM BOOK;";
@@ -109,7 +114,7 @@ public class LibraryModel {
 		return null;
 	}
 
-	// method to return users in a list;
+	// method to return users in a list
 	public ArrayList<String> getUsers() {
 		try {
 			sqlQuery = "SELECT CONCAT(Last_Name, ' ' ,First_Name) AS 'Full Name' FROM Borrower;";
@@ -123,7 +128,8 @@ public class LibraryModel {
 		}
 		return null;
 	}
-
+	
+	// method to return a specific user by first + last name
 	public ArrayList<String> getUserByName(String fname, String lname) {
 		try {
 			sqlQuery = "SELECT * FROM Borrower WHERE First_Name = ? AND Last_Name = ?";
@@ -139,7 +145,8 @@ public class LibraryModel {
 
 		return null;
 	}
-
+	
+	// method to update a user in the database
 	public void updateUser(String fname, String lname, String email, int ID) {
 		try {
 			sqlQuery = "UPDATE Borrower SET First_Name = ?, Last_Name = ?, Borrower_email = ? WHERE Borrower_ID = ?;";
@@ -155,7 +162,8 @@ public class LibraryModel {
 
 		}
 	}
-
+	
+	// method to return a books date checked out, return date, as well as the borrowers name based on the books title.
 	public ArrayList<String> getBookLoanStatus(String title) {
 		try {
 			sqlQuery = "SELECT CONCAT(Last_Name, ' ' ,First_Name) AS 'Full Name',BL.Date_Out as 'Date Out', BL.Date_Due as 'Date Due' FROM BORROWER AS BO INNER JOIN BOOK_LOAN AS BL ON "
@@ -172,6 +180,7 @@ public class LibraryModel {
 		return null;
 	}
 
+	// method to add a user in the database
 	public void addUser(String fname, String lname, String email) {
 		try {
 			sqlQuery = "INSERT INTO Borrower (First_Name, Last_Name, Borrower_email) VALUES(?, ?, ?);";
@@ -205,6 +214,7 @@ public class LibraryModel {
 		return null;
 	}
 
+	//return a table model
 	public TableModel getTable() {
 		try {
 			myStmt = myConn.prepareStatement(sqlQuery);
@@ -218,20 +228,24 @@ public class LibraryModel {
 		return null;
 	}
 
+	//adding a book requires all of these queries to be run
 	public void AddBook(ArrayList<String> book) {
 		executeQueryAddBook(book);
 		executeQueryAddAuthor(book);
 		executeQueryAddAuthorBook(book);
 	}
 
+	//checks out a book
 	public void CheckOutBook(String title, String borrower, int weeks) {
 		executeQueryAddBookLoan(title, borrower, weeks);
 	}
 
+	//ends the bookloan
 	public void ReturnBook(String title) {
 		executeQueryEndBookLoan(title);
 	}
 
+	//gets the id for the given book
 	private void executeQueryGetBookID(String title) {
 		try {
 			sqlQuery = "SELECT BOOKID FROM BOOK WHERE TITLE = ?";
@@ -243,15 +257,20 @@ public class LibraryModel {
 		}
 	}
 
+	//ends the book loan
 	private void executeQueryEndBookLoan(String title) {
 		try {
+			//format the date for the database
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDateTime now = LocalDateTime.now();
 			executeQueryGetBookID(title);
 			String bookID = items.get(0);
 			String Name = getBookLoanStatus(title).get(0);
+			
+			//get the id of the borrower
 			String BorrowerID = getUserByName(seperateSpace(Name, true), seperateSpace(Name, false)).get(0);
 
+			//update the book loan in the database
 			sqlQuery = "UPDATE BOOK_LOAN SET DATE_RETURNED = ? WHERE Book_BookID = ? AND Borrower_Borrower_ID = ?";
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.setString(1, dtf.format(now));
@@ -259,6 +278,7 @@ public class LibraryModel {
 			myStmt.setString(3, BorrowerID);
 			myStmt.executeUpdate();
 
+			//set the books availability 
 			sqlQuery = "UPDATE BOOK SET Available = 1 WHERE BOOKID = ?";
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.setString(1, bookID);
@@ -268,6 +288,7 @@ public class LibraryModel {
 		}
 	}
 
+	//inserts into the book - author junction table
 	private void executeQueryAddAuthorBook(ArrayList<String> book) {
 		ArrayList<String> First = new ArrayList<String>();
 		ArrayList<String> Last = new ArrayList<String>();
@@ -276,6 +297,7 @@ public class LibraryModel {
 			First.add(seperateSpace(book.get(j), true));
 		}
 
+		//add each author to the table
 		for (int j = 0; j < Last.size(); j++) {
 			try {
 				sqlQuery = "INSERT INTO BOOK_AUTHOR(BOOK_BOOKID, AUTHOR_AUTHORID) " + "SELECT "
@@ -292,9 +314,11 @@ public class LibraryModel {
 		}
 	}
 
+	//add authors from the dropdown list
 	private void executeQueryAddAuthor(ArrayList<String> book) {
 		ArrayList<String> currentAuthors = getAuthors();
 		for (int i = 4; i < book.size(); i++) {
+			//check to make sure the author isn't already in the database
 			for (int j = 0; j < currentAuthors.size() && i < book.size(); j++) {
 				if (currentAuthors.get(j).equals(book.get(i))) {
 					book.remove(i);
@@ -304,10 +328,12 @@ public class LibraryModel {
 		}
 		ArrayList<String> First = new ArrayList<String>();
 		ArrayList<String> Last = new ArrayList<String>();
+		//seperate the authors names into first and last
 		for (int j = 4; j < book.size(); j++) {
 			Last.add(seperateSpace(book.get(j), false));
 			First.add(seperateSpace(book.get(j), true));
 		}
+		//insert the authors into the database
 		for (int i = 0; i < First.size(); i++) {
 			sqlQuery = "INSERT INTO author (Last_Name, First_Name) VALUES (?,?)";
 
@@ -323,6 +349,7 @@ public class LibraryModel {
 		}
 	}
 
+	//Adds a book into the database
 	private void executeQueryAddBook(ArrayList<String> book) {
 		try {
 			sqlQuery = "INSERT INTO BOOK(Title, ISBN, Edition_Number, Subject) VALUES (?, ?, ?, ?)";
@@ -338,17 +365,21 @@ public class LibraryModel {
 
 		}
 	}
-
+	
+	//adds a book loan into the database
 	private void executeQueryAddBookLoan(String title, String borrower, int weeks) {
 		try {
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			LocalDateTime now = LocalDateTime.now();
+			
+			//get the book's id based on the title
 			sqlQuery = "SELECT BOOKID FROM BOOK WHERE TITLE = ?";
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.setString(1, title);
 			executeQueryReturnArrayList();
 			int bookId = Integer.parseInt(items.get(0));
 
+			//get the borrower's id based on their name
 			sqlQuery = "SELECT BORROWER_ID FROM BORROWER WHERE Last_Name = ? AND First_Name = ?";
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.setString(1, seperateSpace(borrower, false));
@@ -356,6 +387,7 @@ public class LibraryModel {
 			executeQueryReturnArrayList();
 			int borrowerId = Integer.parseInt(items.get(0));
 
+			//add new book loan into the book_loan table
 			sqlQuery = "INSERT INTO BOOK_LOAN (BOOK_BOOKID, BORROWER_BORROWER_ID, COMMENT, DATE_OUT, DATE_DUE) "
 					+ "VALUES ('" + bookId + "','" + borrowerId + "', '" + "Borrowed On " + now.getMonth() + " "
 					+ now.getDayOfWeek() + " " + now.getDayOfMonth() + "', '" + dtf.format(now) + "', '"
@@ -363,6 +395,7 @@ public class LibraryModel {
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.executeUpdate();
 
+			//set the availability of the book to 0
 			sqlQuery = "UPDATE BOOK SET AVAILABLE = 0 WHERE BOOKID = " + bookId;
 			myStmt = myConn.prepareStatement(sqlQuery);
 			myStmt.executeUpdate();
@@ -375,6 +408,7 @@ public class LibraryModel {
 		}
 	}
 
+	//returns the result set's data in a tablemodel for a select statement
 	private void executeQueryReturnTable() {
 
 		try {
@@ -391,6 +425,7 @@ public class LibraryModel {
 
 	}
 
+	//returns the result set's data in an arraylist for a select statement
 	private void executeQueryReturnArrayList() {
 
 		try {
@@ -406,6 +441,7 @@ public class LibraryModel {
 		}
 	}
 
+	//seperates a string into 2 strings if there is a space
 	public String seperateSpace(String toSeperate, boolean rightSide) {
 		String last = "";
 		String first = "";

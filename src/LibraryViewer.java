@@ -14,8 +14,8 @@ import javax.swing.table.*;
 
 public class LibraryViewer extends JFrame {
 	private static final long serialVersionUID = 1L;
+	// declare GUI elements
 	private static LibraryModel model = new LibraryModel();
-	// CardLayout cardLayout;
 	private Color bgColor = new Color(234, 253, 230);
 	private JTable t_Table;
 	private JScrollPane sp_ScrollPane;
@@ -25,10 +25,8 @@ public class LibraryViewer extends JFrame {
 			l_Date, l_DueDate, l_Book, l_Borrower;
 	private JPanel p_AddBook, p_AddUpdateBorrower, p_Checkout, p_Return, p_List, p_Top, p_Mid, p_Bottom;
 	private JTextField tf_Author, tf_Title, tf_ISBN, tf_Edition, tf_Subject, tf_FirstName, tf_LastName, tf_Email;
-
 	private JComboBox<String> cb_PrepSQL, cb_Type, cb_User, cb_Books, cb_AuthorList;
 	private JTabbedPane tp_Tabs;
-
 	private ButtonGroup bg_Group;
 	JRadioButton rb_oneWeek, rb_twoWeek, rb_threeWeek;
 
@@ -42,19 +40,20 @@ public class LibraryViewer extends JFrame {
 		static final int ADDUPDATEBROWSER = 2;
 		static final int CHECKOUT = 3;
 		static final int RETURN = 4;
-//		LIST, ADDBOOK, ADDUPDATEBROWSER, CHECKOUT, RETURN;
 	}
 
+	//main method
 	public static void main(String[] args) {
-		new LibraryViewer(/* TableModel */);
+		new LibraryViewer();
 	}
 
 	public LibraryViewer() {
+		
+		// boiler plate code
 		super("Library Management V1.0 Oscar & Sam");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(750, 250);
 		this.setLocationRelativeTo(null);
-//		this.setResizable(false);
 
 		tp_Tabs = new JTabbedPane();
 		p_AddBook = new JPanel();
@@ -132,6 +131,7 @@ public class LibraryViewer extends JFrame {
 
 		setupList();
 
+		//add listeners for buttons
 		ListenerForButtons listener = new ListenerForButtons();
 		b_Go.addActionListener(listener);
 		b_Add.addActionListener(listener);
@@ -140,6 +140,7 @@ public class LibraryViewer extends JFrame {
 		rb_twoWeek.addActionListener(listener);
 		rb_threeWeek.addActionListener(listener);
 
+		//add listeners for combo boxes
 		ListenerForComboBox cb_Listener = new ListenerForComboBox();
 		cb_User.addItemListener(cb_Listener);
 		cb_PrepSQL.addItemListener(cb_Listener);
@@ -147,6 +148,7 @@ public class LibraryViewer extends JFrame {
 		cb_Books.addItemListener(cb_Listener);
 		cb_Type.addItemListener(cb_Listener);
 
+		//add panels to tabs
 		tp_Tabs.add("List", p_List);
 		tp_Tabs.add("Add Book", p_AddBook);
 		tp_Tabs.add("Add/Update Borrower", p_AddUpdateBorrower);
@@ -158,9 +160,10 @@ public class LibraryViewer extends JFrame {
 		p_Return.setBackground(bgColor);
 		p_List.setBackground(bgColor);
 
+		//add listener for tabs
 		tp_Tabs.addChangeListener(new ChangeListener() {
 
-			@Override
+			//when a tab is selected setup the GUI elements for the tab
 			public void stateChanged(ChangeEvent e) {
 				if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
 					setupList();
@@ -178,10 +181,13 @@ public class LibraryViewer extends JFrame {
 			}
 		});
 
+		//add tabs
 		this.add(tp_Tabs);
+		//last line
 		this.setVisible(true);
 	}
 
+	//setup elements for the addbook tab
 	void setupAddBook() {
 		p_AddBook.removeAll();
 
@@ -257,6 +263,7 @@ public class LibraryViewer extends JFrame {
 		p_AddBook.add(l_PossibleErrors, c);
 	}
 
+	//setup elements for the addupdateborrower tab
 	void setupAddUpdateBorrower() {
 		p_AddUpdateBorrower.removeAll();
 		cb_User.removeAllItems();
@@ -298,6 +305,7 @@ public class LibraryViewer extends JFrame {
 		p_AddUpdateBorrower.add(p_Bottom, BorderLayout.SOUTH);
 	}
 
+	//setup elements for the setupCheckout tab
 	void setupCheckout() {
 		LocalDateTime now = LocalDateTime.now();
 
@@ -345,6 +353,7 @@ public class LibraryViewer extends JFrame {
 		p_Checkout.add(l_PossibleErrors);
 	}
 
+	//setup elements for the setupReturn tab
 	void setupReturn() {
 		p_Return.removeAll();
 		cb_Books.removeAllItems();
@@ -385,6 +394,7 @@ public class LibraryViewer extends JFrame {
 		p_Return.add(l_PossibleErrors);
 	}
 
+	//setup elements for the setupList tab
 	void setupList() {
 		p_List.removeAll();
 		cb_PrepSQL.removeAllItems();
@@ -433,19 +443,23 @@ public class LibraryViewer extends JFrame {
 
 	}
 
+	//inner class for button listeners
 	private class ListenerForButtons implements ActionListener {
 
-		@Override
 		public void actionPerformed(ActionEvent e) {
 			try {
+				//button listeners for the list tab
 				if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
+					//if the button = b_Go
 					if (e.getSource().equals(b_Go)) {
+						//get the element from the decision combo box
 						int decision = cb_PrepSQL.getSelectedIndex();
+						//if the only get the element from the type combobox if it is needed for the query
 						model.ListPanelsqlStatement(decision,
 								cb_Type.getItemCount() > 0 ? cb_Type.getSelectedItem().toString() : "");
+						//setup the table model
 						tm_TableModel = model.getTable();
 						t_Table = new JTable(tm_TableModel);
-
 						JScrollPane sp_Temp = new JScrollPane(t_Table);
 						JPanel temp = (JPanel) p_List.getComponent(1);
 
@@ -454,20 +468,25 @@ public class LibraryViewer extends JFrame {
 
 						revalidate();
 					}
-
+				//button listeners for the addbook tab
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
+					//adds an author to the to the combobox
 					if (e.getSource().equals(b_Add)) {
 						cb_AuthorList.addItem(tf_Author.getText());
+						//clear the selected author from the combo box
 					} else if (e.getSource().equals(b_Clear)) {
 						cb_AuthorList.removeItem(cb_AuthorList.getSelectedItem());
 						if (cb_AuthorList.getItemCount() == 0) { // Fixes problem with box not clearing itself
 							cb_AuthorList.removeAllItems();
 						}
+						//adds the book
 					} else if (e.getSource().equals(b_Go)) {
+						//validate text fields
 						if (tf_ISBN.getText().toString().equals("") || tf_Title.getText().toString().equals("")
 								|| tf_Edition.getText().toString().equals("")
 								|| tf_Subject.getText().toString().equals("")) {
 							if (tf_ISBN.getText().length() == 13) {
+								//create an arraylist to store all the books data
 								ArrayList<String> book = new ArrayList<String>();
 								boolean noEmptySlots = true;
 								book.add(tf_Title.getText());
@@ -492,40 +511,32 @@ public class LibraryViewer extends JFrame {
 							l_PossibleErrors.setText("One or more fields is Empty!");
 						}
 					}
+					
+				//button listeners for the addupdateBorrower tab	
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
+					//update the selected borrower
 					if (e.getActionCommand().equals("Update Borrower")) {
-<<<<<<< HEAD
 						String fname = tf_FirstName.getText();
 						model.updateUser(fname, tf_LastName.getText(), tf_Email.getText(), ID);
 						setupAddUpdateBorrower();
 						l_PossibleErrors.setText( fname + " has been Updated!");
 					}
+					//add a new borrower
 					else if (e.getActionCommand().equals("Add Borrower")) {
 						String fname = tf_FirstName.getText();
 						model.addUser(fname, tf_LastName.getText(), tf_Email.getText());
 						setupAddUpdateBorrower();
 						l_PossibleErrors.setText( fname + " has been added!");
-=======
-
-						model.updateUser(tf_FirstName.getText(), tf_LastName.getText(), tf_Email.getText(), ID);
-						l_PossibleErrors.setText("Update Complete!");
-						cb_User.setSelectedIndex(0);
-					} else if (e.getActionCommand().equals("Add Borrower")) {
-						model.addUser(tf_FirstName.getText(), tf_LastName.getText(), tf_Email.getText());
-						l_PossibleErrors.setText("New borrower added!");
-						tf_FirstName.setText("");
-						tf_LastName.setText("");
-						tf_Email.setText("");
-
->>>>>>> d3400f27c87806b2acc598bf4fed1d73e6d3dc73
 					}
 
+				//button listeners for the checkout tab
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
 					LocalDateTime now = LocalDateTime.now();
 					if (e.getSource().equals(b_Go)) {
+						//get info from combo boxes
 						String title = cb_Books.getSelectedItem().toString(),
 								borrower = cb_User.getSelectedItem().toString();
-						System.out.println(borrower);
+						//duration of loan based on the radio buttons
 						model.CheckOutBook(title, borrower,
 								rb_oneWeek.isSelected() ? 1 : rb_twoWeek.isSelected() ? 2 : 3);
 						setupCheckout();
@@ -537,6 +548,8 @@ public class LibraryViewer extends JFrame {
 					} else if (e.getSource().equals(rb_threeWeek)) {
 						l_DueDate.setText("Date Due: " + dtf.format(now.plusDays(21)));
 					}
+					
+				//button listeners for the return tab
 				} else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
 					if (e.getSource().equals(b_Go)) {
 						String title = cb_Books.getSelectedItem().toString();
@@ -549,22 +562,26 @@ public class LibraryViewer extends JFrame {
 				l_PossibleErrors.setText(e1.getMessage());
 			}
 		}
-
 	}
 
+	//inner class for ComboBox listeners
 	private class ListenerForComboBox implements ItemListener {
 
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			try {
+				//ComboBox listeners for the List tab
 				if (tp_Tabs.getSelectedIndex() == tabs.LIST) {
 					if (e.getSource().equals(cb_PrepSQL) && e.getStateChange() == ItemEvent.SELECTED) {
+						//the Type combo box is only required for 2/6 queries 
 						if (cb_PrepSQL.getSelectedIndex() == 0) {
 							cb_Type.setVisible(false);
 						}
 						if (cb_PrepSQL.getSelectedIndex() == 1) {
 							cb_Type.setVisible(false);
 						}
+						
+						//display the subjects of the books for the query
 						if (cb_PrepSQL.getSelectedIndex() == 2) {
 							ArrayList<String> temp = model.getSubjects();
 							cb_Type.removeAllItems();
@@ -573,6 +590,8 @@ public class LibraryViewer extends JFrame {
 							}
 							cb_Type.setVisible(true);
 						}
+						
+						//display the subjects of the authors for the query
 						if (cb_PrepSQL.getSelectedIndex() == 3) {
 							ArrayList<String> temp = model.getAuthors();
 							cb_Type.removeAllItems();
@@ -592,16 +611,20 @@ public class LibraryViewer extends JFrame {
 						}
 					}
 
+				//ComboBox listeners for the addbook tab
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDBOOK) {
 
+				//ComboBox listeners for the AddupdateBorrower tab
 				} else if (tp_Tabs.getSelectedIndex() == tabs.ADDUPDATEBROWSER) {
 					if (e.getSource().equals(cb_User) && e.getStateChange() == ItemEvent.SELECTED) {
+						//if no borrower is selected setup for adding a new borrower
 						if (cb_User.getSelectedIndex() == 0) {
 							b_Go.setText("Add Borrower");
 							tf_FirstName.setText("");
 							tf_LastName.setText("");
 							tf_Email.setText("");
 
+						//if a borrower is selected setup for updating them
 						} else if (cb_User.getSelectedIndex() != 0) {
 							b_Go.setText("Update Borrower");
 							String fullname = cb_User.getSelectedItem().toString();
@@ -617,9 +640,12 @@ public class LibraryViewer extends JFrame {
 
 					}
 
+				//ComboBox listeners for the checkout tab
 				} else if (tp_Tabs.getSelectedIndex() == tabs.CHECKOUT) {
 					l_Book.setText("Book: " + cb_Books.getSelectedItem().toString());
 					l_Borrower.setText("Borrower: " + cb_User.getSelectedItem().toString());
+					
+				//ComboBox listeners for the return tab
 				} else if (tp_Tabs.getSelectedIndex() == tabs.RETURN) {
 					String bookSelected = cb_Books.getSelectedItem().toString();
 					ArrayList<String> loanStatus = model.getBookLoanStatus(bookSelected);
@@ -632,6 +658,5 @@ public class LibraryViewer extends JFrame {
 				l_PossibleErrors.setText(e1.getMessage());
 			}
 		}
-
 	}
 }
