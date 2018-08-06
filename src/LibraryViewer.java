@@ -12,6 +12,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.*;
 
+/**
+ * Name: Sam Nelson, Oscar Stockmann
+ * Date: Aug 1, 2018
+ * Purpose: A program to simulate the functions of library
+ * Student Number 0785337, 0811960
+ */
+
 public class LibraryViewer extends JFrame {
 	private static final long serialVersionUID = 1L;
 	// declare GUI elements
