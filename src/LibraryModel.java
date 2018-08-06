@@ -7,12 +7,8 @@ import javax.swing.table.*;
 /**
  * Name: Sam Nelson, Oscar Stockmann
  * Date: Aug 1, 2018
- * Purpose: 
+ * Purpose: the model for the Library viewer
  * Student Number 0785337, 0811960
- */
-
-/**
- * Program Name: Project 1 Coder: Sam, Oscar Date: Aug 1, 2018 Purpose:
  */
 public class LibraryModel {
 	Connection myConn = null;
