@@ -373,10 +373,10 @@ public class LibraryViewer extends JFrame {
 		for (int i = 0; i < books.size(); i++) {
 			cb_Books.addItem(books.get(i));
 		}
-		String bookSelected = cb_Books.getSelectedItem().toString();
+		String bookSelected = cb_Books.getItemCount() > 0 ? cb_Books.getSelectedItem().toString() : "";
 		ArrayList<String> loanStatus = model.getBookLoanStatus(bookSelected);
 		if (loanStatus.size() > 0) {
-
+			
 			l_Book.setText("Book: " + bookSelected);
 			l_Borrower.setText("Borrower: " + loanStatus.get(0));
 			l_Date.setText("Date Out: " + loanStatus.get(1));
